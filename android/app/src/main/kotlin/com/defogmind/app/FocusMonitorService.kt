@@ -1218,9 +1218,11 @@ class FocusMonitorService : Service() {
                 floatingPillSuffixText?.text = suffix
                 floatingPillSuffixText?.setTextColor(accentColor)
 
-                // Update border color
+                // Update background and border color
+                val isDark = PassStorage.isDarkTheme(this@FocusMonitorService)
+                val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
                 val shape = GradientDrawable().apply {
-                    setColor(Color.parseColor("#B30B0F17"))
+                    setColor(pillBgColor)
                     setStroke(2, accentColor)
                     cornerRadius = 40f
                 }
