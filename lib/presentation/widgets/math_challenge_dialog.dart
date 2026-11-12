@@ -106,7 +106,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
       backgroundColor: AppTheme.surfaceCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(22),
-        side: const BorderSide(color: AppTheme.cardBorder),
+        side: BorderSide(color: AppTheme.cardBorder),
       ),
       title: Row(
         children: [
@@ -121,7 +121,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
           const SizedBox(width: 12),
           Text(
             widget.title,
-            style: const TextStyle(color: AppTheme.textPrimary, fontSize: 17, fontWeight: FontWeight.w700),
+            style: TextStyle(color: AppTheme.textPrimary, fontSize: 17, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -132,7 +132,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
           children: [
             Text(
               'Solve this quick calculation to ${widget.actionDescription}:',
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
             ),
             const SizedBox(height: 18),
             Container(
@@ -160,11 +160,11 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
               controller: _controller,
               focusNode: _focusNode,
               keyboardType: TextInputType.number,
-              style: const TextStyle(color: AppTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.w700),
+              style: TextStyle(color: AppTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hintText: 'Enter answer',
-                hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 14),
+                hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 14),
                 filled: true,
                 fillColor: AppTheme.background,
                 errorText: _errorMessage,
@@ -172,7 +172,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
                 contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppTheme.cardBorder),
+                  borderSide: BorderSide(color: AppTheme.cardBorder),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -187,7 +187,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
+          child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(

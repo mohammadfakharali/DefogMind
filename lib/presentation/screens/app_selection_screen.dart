@@ -213,12 +213,12 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
             : 'Monitored Apps (${_selectedPackages.length})'),
       ),
       body: _isLoading
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: AppTheme.mint),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(color: AppTheme.mint),
+                  const SizedBox(height: 16),
                   Text(
                     'Scanning installed apps...',
                     style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
@@ -258,21 +258,21 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                   child: TextField(
                     onChanged: (val) => setState(() => _searchQuery = val),
-                    style: const TextStyle(color: AppTheme.textPrimary),
+                    style: TextStyle(color: AppTheme.textPrimary),
                     decoration: InputDecoration(
                       hintText: 'Search installed apps...',
-                      hintStyle: const TextStyle(color: AppTheme.textMuted),
-                      prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondary),
+                      hintStyle: TextStyle(color: AppTheme.textMuted),
+                      prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
                       filled: true,
                       fillColor: AppTheme.surfaceCard,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: AppTheme.cardBorder),
+                        borderSide: BorderSide(color: AppTheme.cardBorder),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: const BorderSide(color: AppTheme.cardBorder),
+                        borderSide: BorderSide(color: AppTheme.cardBorder),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -305,7 +305,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                         _activeTab == 1
                             ? 'Selected Monitored Apps (${filteredApps.length})'
                             : 'All Apps (Selected at top)',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textPrimary,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -343,7 +343,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                       ? 'No monitored apps selected yet.\nSwitch to "All Apps" to select apps.'
                                       : 'No apps found matching "$_searchQuery"',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: AppTheme.textMuted, fontSize: 14),
+                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 14),
                                 ),
                               ],
                             ),
@@ -399,7 +399,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                 ),
                                 subtitle: Text(
                                   pkg,
-                                  style: const TextStyle(color: AppTheme.textMuted, fontSize: 11),
+                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 11),
                                 ),
                                 onChanged: (val) {
                                   setState(() {

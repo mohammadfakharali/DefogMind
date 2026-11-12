@@ -249,7 +249,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
       backgroundColor: AppTheme.surfaceCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(28),
-        side: const BorderSide(color: AppTheme.cardBorder, width: 1.5),
+        side: BorderSide(color: AppTheme.cardBorder, width: 1.5),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
@@ -278,7 +278,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
         Text(
           widget.title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppTheme.textPrimary,
             fontSize: 19,
             fontWeight: FontWeight.w800,
@@ -288,7 +288,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
         Text(
           widget.subtitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppTheme.textSecondary,
             fontSize: 12.5,
             height: 1.4,
@@ -347,7 +347,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           children: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
               ),
@@ -355,7 +355,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
             _buildDigitButton('0'),
             IconButton(
               onPressed: _onBackspace,
-              icon: const Icon(Icons.backspace_outlined, color: AppTheme.textPrimary, size: 22),
+              icon: Icon(Icons.backspace_outlined, color: AppTheme.textPrimary, size: 22),
             ),
           ],
         ),
@@ -364,7 +364,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           const SizedBox(height: 6),
           TextButton(
             onPressed: _onForgotPinTap,
-            child: const Text(
+            child: Text(
               'Forgot PIN? Answer Security Question',
               style: TextStyle(
                 color: AppTheme.textMuted,
@@ -394,7 +394,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 12),
-        const Center(
+        Center(
           child: Text(
             'Parent Recovery Question',
             textAlign: TextAlign.center,
@@ -406,7 +406,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 6),
-        const Center(
+        Center(
           child: Text(
             'Choose a security question only you know so your child cannot reset your PIN if you forget it.',
             textAlign: TextAlign.center,
@@ -418,7 +418,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'SECURITY QUESTION',
           style: TextStyle(
             color: AppTheme.textSecondary,
@@ -441,7 +441,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
               isExpanded: true,
               dropdownColor: AppTheme.surfaceCard,
               icon: const Icon(Icons.keyboard_arrow_down, color: AppTheme.cyan),
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textPrimary,
                 fontSize: 12.5,
                 fontWeight: FontWeight.w600,
@@ -461,7 +461,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 14),
-        const Text(
+        Text(
           'YOUR SECRET ANSWER',
           style: TextStyle(
             color: AppTheme.textSecondary,
@@ -474,20 +474,20 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
         TextField(
           controller: _answerController,
           autofocus: true,
-          style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
+          style: TextStyle(color: AppTheme.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             hintText: 'Enter secret answer...',
-            hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+            hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 13),
             filled: true,
             fillColor: AppTheme.background,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: AppTheme.cardBorder),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: AppTheme.cardBorder),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -551,7 +551,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 12),
-        const Center(
+        Center(
           child: Text(
             'Recover Parent PIN',
             textAlign: TextAlign.center,
@@ -563,7 +563,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
           ),
         ),
         const SizedBox(height: 6),
-        const Center(
+        Center(
           child: Text(
             'Answer your secret Parent Security Question to set a new 4-digit PIN.',
             textAlign: TextAlign.center,
@@ -596,20 +596,20 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
         TextField(
           controller: _answerController,
           autofocus: true,
-          style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
+          style: TextStyle(color: AppTheme.textPrimary, fontSize: 14),
           decoration: InputDecoration(
             hintText: 'Your secret answer...',
-            hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+            hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 13),
             filled: true,
             fillColor: AppTheme.background,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: AppTheme.cardBorder),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: AppTheme.cardBorder),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -643,7 +643,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.textSecondary,
-                  side: const BorderSide(color: AppTheme.cardBorder),
+                  side: BorderSide(color: AppTheme.cardBorder),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
@@ -698,7 +698,7 @@ class _ParentPinDialogState extends State<ParentPinDialog> {
         ),
         child: Text(
           digit,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppTheme.textPrimary,
             fontSize: 20,
             fontWeight: FontWeight.w700,

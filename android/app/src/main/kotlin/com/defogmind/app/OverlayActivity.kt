@@ -71,11 +71,16 @@ class OverlayActivity : Activity() {
     private fun createKidsBlockerView(): View {
         val isTimeUp = (kidsReason == "TIME_UP")
         val accentColor = if (isTimeUp) Color.parseColor("#F59E0B") else Color.parseColor("#06B6D4")
+        val isDark = PassStorage.isDarkTheme(this)
+        val bgColor = if (isDark) Color.parseColor("#0B0F17") else Color.parseColor("#F8FAFC")
+        val cardBgColor = if (isDark) Color.parseColor("#161E2E") else Color.WHITE
+        val textPrimaryColor = if (isDark) Color.WHITE else Color.parseColor("#0F172A")
+        val textSecondaryColor = if (isDark) Color.parseColor("#94A3B8") else Color.parseColor("#475569")
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundColor(Color.parseColor("#0B0F17"))
+            setBackgroundColor(bgColor)
             setPadding(dp(24), dp(32), dp(24), dp(32))
         }
 
@@ -85,7 +90,7 @@ class OverlayActivity : Activity() {
             setTextColor(accentColor)
             gravity = Gravity.CENTER
             val shape = GradientDrawable().apply {
-                setColor(Color.parseColor("#161E2E"))
+                setColor(cardBgColor)
                 setStroke(dp(1), accentColor)
                 cornerRadius = dp(20).toFloat()
             }
@@ -102,7 +107,7 @@ class OverlayActivity : Activity() {
         val titleView = TextView(this).apply {
             text = if (isTimeUp) "Screen Time Is Up!" else "App Locked by Parent"
             textSize = 24f
-            setTextColor(Color.WHITE)
+            setTextColor(textPrimaryColor)
             gravity = Gravity.CENTER
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
@@ -115,7 +120,7 @@ class OverlayActivity : Activity() {
                 "This app is blocked while Kids Mode is active. Only parent-approved apps can be opened."
             }
             textSize = 13.5f
-            setTextColor(Color.parseColor("#94A3B8"))
+            setTextColor(textSecondaryColor)
             gravity = Gravity.CENTER
             setPadding(dp(12), dp(10), dp(12), dp(24))
         }
@@ -186,10 +191,18 @@ class OverlayActivity : Activity() {
     }
 
     private fun createBlockerView(): View {
+        val isDark = PassStorage.isDarkTheme(this)
+        val bgColor = if (isDark) Color.parseColor("#0B0F17") else Color.parseColor("#F8FAFC")
+        val cardBgColor = if (isDark) Color.parseColor("#161E2E") else Color.WHITE
+        val cardBorderColor = if (isDark) Color.parseColor("#243046") else Color.parseColor("#E2E8F0")
+        val textPrimaryColor = if (isDark) Color.WHITE else Color.parseColor("#0F172A")
+        val textSecondaryColor = if (isDark) Color.parseColor("#94A3B8") else Color.parseColor("#475569")
+        val textMutedColor = if (isDark) Color.parseColor("#64748B") else Color.parseColor("#94A3B8")
+
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            setBackgroundColor(Color.parseColor("#0B0F17"))
+            setBackgroundColor(bgColor)
             setPadding(dp(24), dp(32), dp(24), dp(32))
         }
 
@@ -200,7 +213,7 @@ class OverlayActivity : Activity() {
             setTextColor(Color.parseColor("#EF4444"))
             gravity = Gravity.CENTER
             val shape = GradientDrawable().apply {
-                setColor(Color.parseColor("#26161E2E"))
+                setColor(if (isDark) Color.parseColor("#26161E2E") else Color.parseColor("#1AEF4444"))
                 setStroke(dp(1), Color.parseColor("#EF4444"))
                 cornerRadius = dp(20).toFloat()
             }
@@ -218,7 +231,7 @@ class OverlayActivity : Activity() {
         val titleView = TextView(this).apply {
             text = "Focus Shield Active"
             textSize = 24f
-            setTextColor(Color.WHITE)
+            setTextColor(textPrimaryColor)
             gravity = Gravity.CENTER
             typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
@@ -228,7 +241,7 @@ class OverlayActivity : Activity() {
         val subtitleView = TextView(this).apply {
             text = "You have reached your daily screen time limit. Take a short pause and breathe."
             textSize = 13.5f
-            setTextColor(Color.parseColor("#94A3B8"))
+            setTextColor(textSecondaryColor)
             gravity = Gravity.CENTER
             setPadding(dp(12), dp(10), dp(12), dp(20))
         }
@@ -239,8 +252,8 @@ class OverlayActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
             val shape = GradientDrawable().apply {
-                setColor(Color.parseColor("#161E2E"))
-                setStroke(dp(1), Color.parseColor("#243046"))
+                setColor(cardBgColor)
+                setStroke(dp(1), cardBorderColor)
                 cornerRadius = dp(18).toFloat()
             }
             background = shape
@@ -335,7 +348,7 @@ class OverlayActivity : Activity() {
         val disclaimer = TextView(this).apply {
             text = "DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions."
             textSize = 10.5f
-            setTextColor(Color.parseColor("#64748B"))
+            setTextColor(textMutedColor)
             gravity = Gravity.CENTER
             setPadding(dp(12), dp(22), dp(12), 0)
         }

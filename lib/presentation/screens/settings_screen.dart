@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../services/oxygen_pass_manager.dart';
 import '../../services/usage_service.dart';
 import '../../services/admob_service.dart';
+import '../../main.dart';
 import '../widgets/math_challenge_dialog.dart';
 import 'app_selection_screen.dart';
 
@@ -187,6 +188,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildAdultTrackingToggleCard(),
                 const SizedBox(height: 22),
 
+                // Theme Mode Row (Immediate switch, no math required)
+                _buildSectionHeader('APP THEME'),
+                const SizedBox(height: 8),
+                _buildThemeSelectorCard(),
+                const SizedBox(height: 22),
+
                 Opacity(
                   opacity: _isAdultTrackingEnabled ? 1.0 : 0.38,
                   child: IgnorePointer(
@@ -224,7 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Daily Limit Target',
                                       style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
@@ -297,7 +304,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Active time granted per extra unlock:',
                                   style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
                                 ),
@@ -312,7 +319,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                const Text(
+                                Text(
                                   'Note: Dual-clock engine pauses when social app is closed, with a 15-minute absolute ceiling.',
                                   style: TextStyle(color: AppTheme.textMuted, fontSize: 11, fontStyle: FontStyle.italic),
                                 ),
@@ -364,7 +371,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         ),
                                       ),
                                       const SizedBox(height: 2),
-                                      const Text(
+                                      Text(
                                         '2 free resets daily at midnight',
                                         style: TextStyle(color: AppTheme.textSecondary, fontSize: 11.5),
                                       ),
@@ -411,12 +418,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   tileColor: AppTheme.surfaceCard,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: const BorderSide(color: AppTheme.cardBorder),
+                    side: BorderSide(color: AppTheme.cardBorder),
                   ),
                   leading: const Icon(Icons.battery_saver_outlined, color: AppTheme.mint),
-                  title: const Text('Battery Optimization Exemption', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
-                  subtitle: const Text('Allow DefogMind to stay active when recent apps are cleared', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                  trailing: const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+                  title: Text('Battery Optimization Exemption', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
+                  subtitle: Text('Allow DefogMind to stay active when recent apps are cleared', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
                   onTap: () async {
                     await UsageService.requestBatteryExemption();
                   },
@@ -426,12 +433,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   tileColor: AppTheme.surfaceCard,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: const BorderSide(color: AppTheme.cardBorder),
+                    side: BorderSide(color: AppTheme.cardBorder),
                   ),
                   leading: const Icon(Icons.settings_suggest_outlined, color: AppTheme.cyan),
-                  title: const Text('Device Background Management', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
-                  subtitle: const Text('Allow background start and auto-launch permissions', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                  trailing: const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+                  title: Text('Device Background Management', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
+                  subtitle: Text('Allow background start and auto-launch permissions', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
                   onTap: () async {
                     await UsageService.openAutoStartSettings();
                   },
@@ -446,7 +453,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppTheme.cardBorder),
                   ),
-                  child: const Text(
+                  child: Text(
                     'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -464,7 +471,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           : SafeArea(
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppTheme.background,
                   border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
                 ),
@@ -500,7 +507,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildSectionHeader(String title) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         color: AppTheme.textSecondary,
         fontSize: 11,
         fontWeight: FontWeight.w700,
@@ -543,7 +550,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Row(
                   children: [
-                    const Flexible(
+                    Flexible(
                       child: Text(
                         'My App Tracking',
                         style: TextStyle(
@@ -576,7 +583,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _isAdultTrackingEnabled
                       ? 'Active • Monitoring your apps & Brain Fog'
                       : 'Paused • Kids Mode still works anytime',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 11.5,
                   ),
@@ -591,6 +598,126 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: _toggleAdultTracking,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeSelectorCard() {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeModeNotifier,
+      builder: (context, currentMode, _) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.surfaceCard,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppTheme.cardBorder),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Appearance',
+                        style: TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Customize app look and feel',
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 11.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  _buildThemeOptionTab(
+                    mode: ThemeMode.system,
+                    label: 'System',
+                    icon: Icons.brightness_auto_outlined,
+                    isSelected: currentMode == ThemeMode.system,
+                  ),
+                  const SizedBox(width: 8),
+                  _buildThemeOptionTab(
+                    mode: ThemeMode.light,
+                    label: 'Light',
+                    icon: Icons.light_mode_outlined,
+                    isSelected: currentMode == ThemeMode.light,
+                  ),
+                  const SizedBox(width: 8),
+                  _buildThemeOptionTab(
+                    mode: ThemeMode.dark,
+                    label: 'Dark',
+                    icon: Icons.dark_mode_outlined,
+                    isSelected: currentMode == ThemeMode.dark,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeOptionTab({
+    required ThemeMode mode,
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+  }) {
+    final isDark = AppTheme.isDark;
+    final unselectedBg = isDark ? const Color(0xFF0B0F17) : const Color(0xFFF1F5F9);
+    final unselectedBorder = isDark ? AppTheme.cardBorder : const Color(0xFFCBD5E1);
+    final unselectedText = isDark ? AppTheme.textSecondary : const Color(0xFF475569);
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => updateAppThemeMode(mode),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : unselectedBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isSelected ? AppTheme.mint : unselectedBorder,
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected ? AppTheme.mint : unselectedText,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? AppTheme.mint : unselectedText,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -695,7 +822,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           child: const Icon(Icons.apps_outlined, color: AppTheme.mint, size: 22),
         ),
-        title: const Text(
+        title: Text(
           'Manage Monitored Apps',
           style: TextStyle(
             color: AppTheme.textPrimary,
@@ -717,7 +844,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 18,
                 child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.mint),
               )
-            : const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+            : Icon(Icons.chevron_right, color: AppTheme.textSecondary),
         onTap: _isNavigatingToApps
             ? null
             : () async {
@@ -777,7 +904,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Flexible(
                     child: Text(
                       'Limit Mode Only: $explanation',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.textPrimary,
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,

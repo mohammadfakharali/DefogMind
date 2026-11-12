@@ -92,20 +92,20 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
         backgroundColor: AppTheme.surfaceCard,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppTheme.cardBorder),
+          side: BorderSide(color: AppTheme.cardBorder),
         ),
-        title: const Text(
+        title: Text(
           'Daily Passes Finished',
           style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w700),
         ),
-        content: const Text(
+        content: Text(
           'You have used your 2 free daily Extra Unlock Passes. Would you like to get 1 extra pass by watching a short video?',
           style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
+            child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -186,14 +186,14 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                     const SizedBox(height: 16),
                     Text(
                       '${widget.blockedAppName} is Blocked',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.textPrimary,
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'You have reached your daily screen time limit. Take a short pause and breathe.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5, height: 1.4),
@@ -259,7 +259,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                       _isFrictionGateOpen
                           ? '$_remainingPasses extra unlock ${_remainingPasses == 1 ? "pass" : "passes"} remaining today'
                           : 'Sit with the breath for 10 seconds before unlocking',
-                      style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
                     ),
                   ],
                 ),
@@ -305,21 +305,21 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.cyan,
-                          side: const BorderSide(color: AppTheme.cardBorder),
+                          side: BorderSide(color: AppTheme.cardBorder),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
                         ),
                         onPressed: _exitToHome,
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Leave The App', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                            const Text('Leave The App', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
                             Text('(Go To Home)', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(height: 14),
-                    const Text(
+                    Text(
                       'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: AppTheme.textMuted, fontSize: 10, height: 1.3),

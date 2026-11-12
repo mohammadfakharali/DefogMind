@@ -227,7 +227,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'KIDS SESSION TIME LIMIT',
                             style: TextStyle(
                               color: AppTheme.textMuted,
@@ -284,10 +284,10 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: AppTheme.cyan.withValues(alpha: 0.25)),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: [
-                            Icon(Icons.shield_outlined, color: AppTheme.cyan, size: 18),
-                            SizedBox(width: 8),
+                            const Icon(Icons.shield_outlined, color: AppTheme.cyan, size: 18),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'Select the ONLY apps your child can use below. All other apps on your phone will be automatically locked during Kids Mode.',
@@ -311,21 +311,21 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                   child: Column(
                     children: [
                       TextField(
-                        style: const TextStyle(color: AppTheme.textPrimary),
+                        style: TextStyle(color: AppTheme.textPrimary),
                         decoration: InputDecoration(
                           hintText: 'Search apps to allow for kids...',
-                          hintStyle: const TextStyle(color: AppTheme.textMuted),
-                          prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondary),
+                          hintStyle: TextStyle(color: AppTheme.textMuted),
+                          prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
                           filled: true,
                           fillColor: AppTheme.surfaceCard,
                           contentPadding: const EdgeInsets.symmetric(vertical: 10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: AppTheme.cardBorder),
+                            borderSide: BorderSide(color: AppTheme.cardBorder),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: AppTheme.cardBorder),
+                            borderSide: BorderSide(color: AppTheme.cardBorder),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -350,7 +350,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                 // App List
                 Expanded(
                   child: filteredApps.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: Text(
                             'No matching apps found.',
                             style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
@@ -420,7 +420,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                                   pkg,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(color: AppTheme.textMuted, fontSize: 11.5),
+                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 11.5),
                                 ),
                                 onChanged: (checked) {
                                   setState(() {
@@ -440,7 +440,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                 // Bottom Save Button
                 Container(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppTheme.surfaceCard,
                     border: Border(top: BorderSide(color: AppTheme.cardBorder)),
                   ),

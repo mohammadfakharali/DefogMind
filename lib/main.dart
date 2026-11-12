@@ -6,20 +6,45 @@ import 'services/usage_service.dart';
 import 'presentation/screens/onboarding_disclosure_screen.dart';
 import 'presentation/screens/home_dashboard.dart';
 
+// Global Theme Notifier for instant dynamic theme changes across the app
+final ValueNotifier<ThemeMode> appThemeModeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Dark slate system UI overlay to match theme instantly
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: AppTheme.background,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ),
-  );
+  // Load saved theme preference: 'system' (default), 'light', or 'dark'
+  final prefs = await SharedPreferences.getInstance();
+  final savedTheme = prefs.getString('app_theme_mode') ?? 'system';
+  if (savedTheme == 'light') {
+    appThemeModeNotifier.value = ThemeMode.light;
+    AppTheme.setBrightness(Brightness.light);
+  } else if (savedTheme == 'dark') {
+    appThemeModeNotifier.value = ThemeMode.dark;
+    AppTheme.setBrightness(Brightness.dark);
+  } else {
+    appThemeModeNotifier.value = ThemeMode.system;
+    final platformBrightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    AppTheme.setBrightness(platformBrightness);
+  }
 
   runApp(const DefogMindRootApp());
+}
+
+Future<void> updateAppThemeMode(ThemeMode mode) async {
+  appThemeModeNotifier.value = mode;
+  final prefs = await SharedPreferences.getInstance();
+  final String modeStr = mode == ThemeMode.light
+      ? 'light'
+      : (mode == ThemeMode.dark ? 'dark' : 'system');
+  await prefs.setString('app_theme_mode', modeStr);
+
+  if (mode == ThemeMode.light) {
+    AppTheme.setBrightness(Brightness.light);
+  } else if (mode == ThemeMode.dark) {
+    AppTheme.setBrightness(Brightness.dark);
+  } else {
+    AppTheme.setBrightness(WidgetsBinding.instance.platformDispatcher.platformBrightness);
+  }
 }
 
 class DefogMindRootApp extends StatefulWidget {
@@ -90,15 +115,39 @@ class _DefogMindRootAppState extends State<DefogMindRootApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DefogMind: Screen Time & Focus',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: _isChecking
-          ? const _BrandedSplashScreen()
-          : (_needsOnboarding
-              ? const OnboardingDisclosureScreen()
-              : const HomeDashboard()),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeModeNotifier,
+      builder: (context, currentThemeMode, _) {
+        final platformBrightness = MediaQuery.platformBrightnessOf(context);
+        final effectiveBrightness = currentThemeMode == ThemeMode.system
+            ? platformBrightness
+            : (currentThemeMode == ThemeMode.dark ? Brightness.dark : Brightness.light);
+
+        AppTheme.setBrightness(effectiveBrightness);
+
+        final bool isEffectiveDark = effectiveBrightness == Brightness.dark;
+
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: isEffectiveDark ? Brightness.light : Brightness.dark,
+            systemNavigationBarColor: isEffectiveDark ? const Color(0xFF0B0F17) : const Color(0xFFF8FAFC),
+            systemNavigationBarIconBrightness: isEffectiveDark ? Brightness.light : Brightness.dark,
+          ),
+          child: MaterialApp(
+            title: 'DefogMind: Screen Time & Focus',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: currentThemeMode,
+            home: _isChecking
+                ? const _BrandedSplashScreen()
+                : (_needsOnboarding
+                    ? const OnboardingDisclosureScreen()
+                    : const HomeDashboard()),
+          ),
+        );
+      },
     );
   }
 }
@@ -128,7 +177,7 @@ class _BrandedSplashScreen extends StatelessWidget {
 
                   // App Title
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
                           text: 'Defog',
@@ -154,7 +203,7 @@ class _BrandedSplashScreen extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   // Subtitle
-                  const Text(
+                  Text(
                     'Clear Mind • Focused Life',
                     style: TextStyle(
                       color: AppTheme.textSecondary,
@@ -170,7 +219,7 @@ class _BrandedSplashScreen extends StatelessWidget {
                     width: 140,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(6),
-                      child: const LinearProgressIndicator(
+                      child: LinearProgressIndicator(
                         backgroundColor: AppTheme.surfaceCard,
                         valueColor: AlwaysStoppedAnimation<Color>(AppTheme.mint),
                         minHeight: 3.5,
@@ -179,7 +228,7 @@ class _BrandedSplashScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  const Text(
+                  Text(
                     'Preparing focus engine...',
                     style: TextStyle(
                       color: AppTheme.textMuted,
@@ -192,7 +241,7 @@ class _BrandedSplashScreen extends StatelessWidget {
             ),
 
             // Bottom Brand Footnote
-            const Positioned(
+            Positioned(
               left: 0,
               right: 0,
               bottom: 24,

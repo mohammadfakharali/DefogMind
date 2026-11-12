@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/usage_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/constants/social_apps.dart';
+import '../../main.dart';
 import 'home_dashboard.dart';
 import 'app_selection_screen.dart';
 
@@ -168,7 +169,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                     Expanded(
                       child: Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppTheme.textPrimary,
                           fontSize: 16.5,
                           fontWeight: FontWeight.w700,
@@ -187,7 +188,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   ),
                   child: Text(
                     message,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12.5,
                       height: 1.45,
@@ -367,7 +368,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
+                Text(
                   'Activate DefogMind',
                   style: TextStyle(
                     color: AppTheme.textPrimary,
@@ -377,7 +378,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   'Allow permissions to locally track your selected apps and show your focus shield.',
                   style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5, height: 1.4),
                 ),
@@ -391,11 +392,11 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppTheme.cyan.withValues(alpha: 0.35), width: 1),
                   ),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.verified_user_outlined, color: AppTheme.cyan, size: 20),
-                      SizedBox(width: 12),
+                      const Icon(Icons.verified_user_outlined, color: AppTheme.cyan, size: 20),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,7 +409,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               'Your app usage and screen-time data never leave your phone. All tracking is processed 100% locally on your device—we never collect, upload, or share your personal data with any external server.',
                               style: TextStyle(
@@ -425,7 +426,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 ),
                 const SizedBox(height: 14),
 
-                const Text(
+                Text(
                   'REQUIRED',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
@@ -453,7 +454,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 ),
                 const SizedBox(height: 10),
 
-                const Text(
+                Text(
                   'RECOMMENDED',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
@@ -487,14 +488,14 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         // Sticky Bottom CTA Bar (Disclaimer + Action Button always visible above the fold)
         Container(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: AppTheme.background,
             border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppTheme.textMuted, fontSize: 9.5, height: 1.25),
@@ -589,30 +590,36 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppTheme.cyan.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.cyan.withValues(alpha: 0.3)),
-                  ),
-                  child: const Text(
-                    'STEP 1 OF 3 • CHOOSE YOUR FOCUS STYLE',
-                    style: TextStyle(
-                      color: AppTheme.cyan,
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.8,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppTheme.cyan.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppTheme.cyan.withValues(alpha: 0.3)),
+                      ),
+                      child: const Text(
+                        'STEP 1 OF 3 • FOCUS STYLE',
+                        style: TextStyle(
+                          color: AppTheme.cyan,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
                     ),
-                  ),
+                    _buildThemeQuickSwitch(),
+                  ],
                 ),
                 const SizedBox(height: 14),
-                const Text(
+                Text(
                   'How do you want to focus?',
                   style: TextStyle(color: AppTheme.textPrimary, fontSize: 24, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
-                const Text(
+                Text(
                   'Choose your preferred focus style. You can change this anytime in Settings.',
                   style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
                 ),
@@ -643,10 +650,10 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: AppTheme.mint.withValues(alpha: 0.35)),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.check_circle_outline, color: AppTheme.mint, size: 24),
-                        SizedBox(width: 12),
+                        const Icon(Icons.check_circle_outline, color: AppTheme.mint, size: 24),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             'Awareness Mode selected! DefogMind will monitor your selected apps screen time without locking you from using them.',
@@ -664,7 +671,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'DAILY SOCIAL LIMIT',
                         style: TextStyle(
                           color: AppTheme.textSecondary,
@@ -697,7 +704,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Total Daily Limit',
                                 style: TextStyle(
                                   color: AppTheme.textPrimary,
@@ -774,7 +781,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         'EXTRA UNLOCK TIME',
                         style: TextStyle(
                           color: AppTheme.textSecondary,
@@ -821,7 +828,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         // Sticky Bottom CTA Bar
         Container(
           padding: const EdgeInsets.fromLTRB(22, 12, 22, 16),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: AppTheme.background,
             border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
           ),
@@ -922,7 +929,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontWeight: FontWeight.w700,
                       fontSize: 14.5,
@@ -947,6 +954,78 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
               size: 22,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeQuickSwitch() {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeModeNotifier,
+      builder: (context, currentMode, _) {
+        final isDarkTheme = AppTheme.isDark;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+          decoration: BoxDecoration(
+            color: isDarkTheme ? AppTheme.surfaceCard : const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDarkTheme ? AppTheme.cardBorder : const Color(0xFFCBD5E1),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildThemeIconBtn(
+                mode: ThemeMode.system,
+                icon: Icons.brightness_auto_outlined,
+                tooltip: 'System',
+                isSelected: currentMode == ThemeMode.system,
+              ),
+              _buildThemeIconBtn(
+                mode: ThemeMode.light,
+                icon: Icons.light_mode_outlined,
+                tooltip: 'Light',
+                isSelected: currentMode == ThemeMode.light,
+              ),
+              _buildThemeIconBtn(
+                mode: ThemeMode.dark,
+                icon: Icons.dark_mode_outlined,
+                tooltip: 'Dark',
+                isSelected: currentMode == ThemeMode.dark,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeIconBtn({
+    required ThemeMode mode,
+    required IconData icon,
+    required String tooltip,
+    required bool isSelected,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => updateAppThemeMode(mode),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+          decoration: BoxDecoration(
+            color: isSelected ? AppTheme.mint : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            size: 15,
+            color: isSelected
+                ? Colors.black
+                : (AppTheme.isDark ? AppTheme.textSecondary : const Color(0xFF64748B)),
+          ),
         ),
       ),
     );
@@ -1024,7 +1103,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
@@ -1033,7 +1112,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 const SizedBox(height: 1),
                 Text(
                   description,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 10.5,
                     height: 1.2,
@@ -1073,7 +1152,7 @@ class _MovingCometBorderCard extends StatefulWidget {
   final bool isCompleted;
   final double borderRadius;
   final double strokeWidth;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   const _MovingCometBorderCard({
     super.key,
@@ -1082,7 +1161,7 @@ class _MovingCometBorderCard extends StatefulWidget {
     this.isCompleted = false,
     this.borderRadius = 18.0,
     this.strokeWidth = 2.5,
-    this.backgroundColor = AppTheme.surfaceCard,
+    this.backgroundColor,
   });
 
   @override
@@ -1128,7 +1207,7 @@ class _MovingCometBorderCardState extends State<_MovingCometBorderCard>
     if (!widget.isActive) {
       return Container(
         decoration: BoxDecoration(
-          color: widget.backgroundColor,
+          color: widget.backgroundColor ?? AppTheme.surfaceCard,
           borderRadius: BorderRadius.circular(widget.borderRadius),
           border: Border.all(
             color: widget.isCompleted

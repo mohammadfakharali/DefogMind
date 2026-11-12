@@ -377,7 +377,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
         actions: [
           if (!_isKidsModeActive)
             IconButton(
-              icon: const Icon(Icons.settings_outlined, color: AppTheme.textPrimary),
+              icon: Icon(Icons.settings_outlined, color: AppTheme.textPrimary),
               tooltip: 'Settings',
               onPressed: _openSettings,
             ),
@@ -422,8 +422,8 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                       const SizedBox(height: 20),
 
                       // Medical & Policy Disclaimer
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                           textAlign: TextAlign.center,
@@ -469,7 +469,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             ),
           ),
           const SizedBox(height: 12),
-          const Text(
+          Text(
             'My App Tracking Paused',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -479,7 +479,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'Your personal Brain Fog Meter and daily limits are currently off. Kids Mode below still works anytime.',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -626,7 +626,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'BRAIN FOG METER',
                 style: TextStyle(
                   color: AppTheme.textMuted,
@@ -679,13 +679,13 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           Text(
             result.tier.description,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppTheme.textSecondary,
               fontSize: 12.5,
             ),
           ),
           const SizedBox(height: 16),
-          const Divider(color: AppTheme.cardBorder, height: 1),
+          Divider(color: AppTheme.cardBorder, height: 1),
           const SizedBox(height: 14),
 
           // Balanced 2-Column Stats (No right overflow)
@@ -739,7 +739,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Daily Limit Used',
                           style: TextStyle(
                             color: AppTheme.textSecondary,
@@ -787,7 +787,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             const SizedBox(width: 6),
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textPrimary,
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
@@ -801,7 +801,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           children: [
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppTheme.textMuted,
                 fontSize: 11,
               ),
@@ -870,7 +870,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                   hasPasses
                       ? 'Temporary unlock after daily limit'
                       : 'Watch a quick ad to get an Extra Unlock Pass',
-                  style: const TextStyle(color: AppTheme.textSecondary, fontSize: 11.5),
+                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 11.5),
                 ),
               ],
             ),
@@ -924,7 +924,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Today\'s App Usage',
                 style: TextStyle(
                   color: AppTheme.textPrimary,
@@ -940,7 +940,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           ),
           const SizedBox(height: 16),
           if (entries.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Center(
                 child: Text(
@@ -974,7 +974,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                             appName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textPrimary,
                               fontSize: 13.5,
                               fontWeight: FontWeight.w600,
@@ -1028,7 +1028,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           ],
 
           const SizedBox(height: 12),
-          const Divider(color: AppTheme.cardBorder, height: 1),
+          Divider(color: AppTheme.cardBorder, height: 1),
           const SizedBox(height: 14),
 
           // Prominent, clear button to Add or Remove Monitored Apps
@@ -1095,7 +1095,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Kids Mode (Child Hand-Off)',
                       style: TextStyle(
                         color: AppTheme.textPrimary,
@@ -1118,7 +1118,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             'Hand your phone to your child safely. Only your allowed apps work until the timer ends, and their usage will never affect your Adult Brain Fog or Daily Limit.',
             style: TextStyle(
               color: AppTheme.textSecondary,
@@ -1232,7 +1232,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                     ? 'Allowed screen time is up! Return phone to parent.'
                     : 'Remaining out of $_kidsLimitMinutes minutes allowed',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppTheme.textSecondary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -1256,10 +1256,10 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppTheme.cardBorder),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.verified_user_outlined, color: AppTheme.mint, size: 18),
-                    SizedBox(width: 10),
+                    const Icon(Icons.verified_user_outlined, color: AppTheme.mint, size: 18),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Adult Dashboard, Settings & Daily Limit are paused and protected while Kids Mode is active.',
@@ -1292,7 +1292,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Allowed Apps for Kids',
                       maxLines: 1,
@@ -1324,7 +1324,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               ),
               const SizedBox(height: 14),
               if (_kidsAllowedPackages.isEmpty)
-                const Text(
+                Text(
                   'No apps allowed in this session.',
                   style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
                 )
@@ -1348,7 +1348,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                           const SizedBox(width: 6),
                           Text(
                             appName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.textPrimary,
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,

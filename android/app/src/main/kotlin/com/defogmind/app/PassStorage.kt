@@ -11,9 +11,23 @@ object PassStorage {
     private const val KEY_BONUS_PASSES = PREFIX + "bonus_passes_earned"
     private const val KEY_LAST_RESET = PREFIX + "last_pass_reset_day"
     private const val KEY_DURATION = PREFIX + "oxygen_pass_duration_seconds"
+    private const val KEY_APP_THEME_MODE = PREFIX + "app_theme_mode"
 
     const val MAX_FREE_DAILY_PASSES = 2L
     const val DEFAULT_DURATION_SECONDS = 300L
+
+    fun isDarkTheme(context: Context): Boolean {
+        val prefs = getPrefs(context)
+        val mode = prefs.getString(KEY_APP_THEME_MODE, "system") ?: "system"
+        return when (mode) {
+            "dark" -> true
+            "light" -> false
+            else -> {
+                val currentNightMode = context.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+                currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+            }
+        }
+    }
 
     private fun getPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

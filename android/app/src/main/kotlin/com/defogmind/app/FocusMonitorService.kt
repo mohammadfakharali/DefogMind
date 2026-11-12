@@ -1066,13 +1066,14 @@ class FocusMonitorService : Service() {
         isFadingOutPill = false
 
         if (floatingPillView == null) {
+            val isDark = PassStorage.isDarkTheme(this)
+            val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
             val root = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(32, 14, 32, 14)
-                // Translucent glassy dark slate background (65-70% opacity)
                 val shape = GradientDrawable().apply {
-                    setColor(Color.parseColor("#B30B0F17"))
+                    setColor(pillBgColor)
                     setStroke(2, accentColor)
                     cornerRadius = 40f
                 }
