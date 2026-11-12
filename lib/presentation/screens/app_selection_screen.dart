@@ -145,10 +145,10 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           decoration: BoxDecoration(
-            color: isActive ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.surfaceCard,
+            color: isActive ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.surfaceCard(context),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isActive ? AppTheme.mint : AppTheme.cardBorder,
+              color: isActive ? AppTheme.mint : AppTheme.cardBorder(context),
               width: isActive ? 1.5 : 1,
             ),
           ),
@@ -158,7 +158,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
               Icon(
                 icon,
                 size: 16,
-                color: isActive ? AppTheme.mint : AppTheme.textSecondary,
+                color: isActive ? AppTheme.mint : AppTheme.textSecondary(context),
               ),
               const SizedBox(width: 6),
               Flexible(
@@ -167,7 +167,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: isActive ? AppTheme.mint : AppTheme.textSecondary,
+                    color: isActive ? AppTheme.mint : AppTheme.textSecondary(context),
                     fontSize: 13,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   ),
@@ -206,7 +206,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.background(context),
       appBar: AppBar(
         title: Text(widget.isOnboarding
             ? 'Select Apps to Track (${_selectedPackages.length})'
@@ -221,7 +221,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                   const SizedBox(height: 16),
                   Text(
                     'Scanning installed apps...',
-                    style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                    style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 14),
                   ),
                 ],
               ),
@@ -258,21 +258,21 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                   child: TextField(
                     onChanged: (val) => setState(() => _searchQuery = val),
-                    style: TextStyle(color: AppTheme.textPrimary),
+                    style: TextStyle(color: AppTheme.textPrimary(context)),
                     decoration: InputDecoration(
                       hintText: 'Search installed apps...',
-                      hintStyle: TextStyle(color: AppTheme.textMuted),
-                      prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
+                      hintStyle: TextStyle(color: AppTheme.textMuted(context)),
+                      prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary(context)),
                       filled: true,
-                      fillColor: AppTheme.surfaceCard,
+                      fillColor: AppTheme.surfaceCard(context),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: AppTheme.cardBorder),
+                        borderSide: BorderSide(color: AppTheme.cardBorder(context)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(color: AppTheme.cardBorder),
+                        borderSide: BorderSide(color: AppTheme.cardBorder(context)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -306,7 +306,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                             ? 'Selected Monitored Apps (${filteredApps.length})'
                             : 'All Apps (Selected at top)',
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: AppTheme.textPrimary(context),
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                         ),
@@ -335,7 +335,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                 Icon(
                                   _activeTab == 1 ? Icons.check_circle_outline_rounded : Icons.search_off_rounded,
                                   size: 48,
-                                  color: AppTheme.textMuted,
+                                  color: AppTheme.textMuted(context),
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
@@ -343,7 +343,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                       ? 'No monitored apps selected yet.\nSwitch to "All Apps" to select apps.'
                                       : 'No apps found matching "$_searchQuery"',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 14),
+                                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 14),
                                 ),
                               ],
                             ),
@@ -360,10 +360,10 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                             return Container(
                               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppTheme.surfaceCard : AppTheme.surfaceCard.withValues(alpha: 0.6),
+                                color: isSelected ? AppTheme.surfaceCard(context) : AppTheme.surfaceCard(context).withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
-                                  color: isSelected ? AppTheme.mint.withValues(alpha: 0.6) : AppTheme.cardBorder,
+                                  color: isSelected ? AppTheme.mint.withValues(alpha: 0.6) : AppTheme.cardBorder(context),
                                   width: isSelected ? 1.5 : 1,
                                 ),
                               ),
@@ -377,7 +377,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                       child: Text(
                                         name,
                                         style: TextStyle(
-                                          color: isSelected ? AppTheme.mint : AppTheme.textPrimary,
+                                          color: isSelected ? AppTheme.mint : AppTheme.textPrimary(context),
                                           fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                           fontSize: 14,
                                         ),
@@ -399,7 +399,7 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
                                 ),
                                 subtitle: Text(
                                   pkg,
-                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 11),
+                                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 11),
                                 ),
                                 onChanged: (val) {
                                   setState(() {
@@ -425,8 +425,8 @@ class _AppSelectionScreenState extends State<AppSelectionScreen> {
             height: 52,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: _selectedPackages.isEmpty ? AppTheme.surfaceCard : AppTheme.mint,
-                foregroundColor: _selectedPackages.isEmpty ? AppTheme.textMuted : Colors.black,
+                backgroundColor: _selectedPackages.isEmpty ? AppTheme.surfaceCard(context) : AppTheme.mint,
+                foregroundColor: _selectedPackages.isEmpty ? AppTheme.textMuted(context) : Colors.black,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
               ),
               onPressed: _selectedPackages.isEmpty ? null : _saveSelection,

@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Theme state: true = Dark Mode, false = Light Mode
-  static bool _isDark = true;
-  static bool get isDark => _isDark;
-
-  static void setBrightness(Brightness brightness) {
-    _isDark = (brightness == Brightness.dark);
-  }
-
-  // Dynamic colors that all existing code accesses directly
-  static Color get background => _isDark ? const Color(0xFF0B0F17) : const Color(0xFFF8FAFC);
-  static Color get surfaceCard => _isDark ? const Color(0xFF161E2E) : Colors.white;
-  static Color get cardBorder => _isDark ? const Color(0xFF243046) : const Color(0xFFE2E8F0);
-
   // Accent Mind States (Universal)
   static const Color mint = Color(0xFF10B981);
   static const Color cyan = Color(0xFF06B6D4);
   static const Color warningAmber = Color(0xFFF59E0B);
   static const Color glitchCoral = Color(0xFFEF4444);
 
-  // Dynamic text colors
-  static Color get textPrimary => _isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
-  static Color get textSecondary => _isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-  static Color get textMuted => _isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+  // Dynamic colors that resolve from the active BuildContext / InheritedTheme
+  static bool isDark(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
+
+  static Color background(BuildContext context) =>
+      isDark(context) ? const Color(0xFF0B0F17) : const Color(0xFFF8FAFC);
+
+  static Color surfaceCard(BuildContext context) =>
+      isDark(context) ? const Color(0xFF161E2E) : Colors.white;
+
+  static Color cardBorder(BuildContext context) =>
+      isDark(context) ? const Color(0xFF243046) : const Color(0xFFE2E8F0);
+
+  static Color textPrimary(BuildContext context) =>
+      isDark(context) ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
+
+  static Color textSecondary(BuildContext context) =>
+      isDark(context) ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+
+  static Color textMuted(BuildContext context) =>
+      isDark(context) ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
 
   // Light ThemeData
   static ThemeData lightTheme = ThemeData(

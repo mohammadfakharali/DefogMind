@@ -371,13 +371,13 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.background(context),
       appBar: AppBar(
         title: Text(_isKidsModeActive ? '🧸 DefogMind Kids Mode' : 'DefogMind'),
         actions: [
           if (!_isKidsModeActive)
             IconButton(
-              icon: Icon(Icons.settings_outlined, color: AppTheme.textPrimary),
+              icon: Icon(Icons.settings_outlined, color: AppTheme.textPrimary(context)),
               tooltip: 'Settings',
               onPressed: _openSettings,
             ),
@@ -389,7 +389,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               ? _buildKidsModeActiveScreen()
               : RefreshIndicator(
                   color: AppTheme.mint,
-                  backgroundColor: AppTheme.surfaceCard,
+                  backgroundColor: AppTheme.surfaceCard(context),
                   onRefresh: _fetchUsageData,
                   child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -428,7 +428,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                           'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: AppTheme.textMuted,
+                            color: AppTheme.textMuted(context),
                             fontSize: 10.5,
                             height: 1.4,
                           ),
@@ -447,7 +447,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: AppTheme.warningAmber.withValues(alpha: 0.4),
@@ -473,7 +473,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             'My App Tracking Paused',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimary(context),
               fontSize: 18,
               fontWeight: FontWeight.w800,
             ),
@@ -483,7 +483,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             'Your personal Brain Fog Meter and daily limits are currently off. Kids Mode below still works anytime.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.textSecondary(context),
               fontSize: 12.5,
               height: 1.4,
             ),
@@ -517,9 +517,9 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorder(context)),
       ),
       child: Row(
         children: [
@@ -568,13 +568,13 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                   Icon(
                     icon,
                     size: 16,
-                    color: isSelected ? AppTheme.mint : AppTheme.textMuted,
+                    color: isSelected ? AppTheme.mint : AppTheme.textMuted(context),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     title,
                     style: TextStyle(
-                      color: isSelected ? AppTheme.textPrimary : AppTheme.textSecondary,
+                      color: isSelected ? AppTheme.textPrimary(context) : AppTheme.textSecondary(context),
                       fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                       fontSize: 12.5,
                     ),
@@ -585,7 +585,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: isSelected ? AppTheme.mint : AppTheme.textMuted,
+                  color: isSelected ? AppTheme.mint : AppTheme.textMuted(context),
                   fontSize: 10,
                 ),
               ),
@@ -616,9 +616,9 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorder(context)),
       ),
       child: Column(
         children: [
@@ -629,7 +629,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               Text(
                 'BRAIN FOG METER',
                 style: TextStyle(
-                  color: AppTheme.textMuted,
+                  color: AppTheme.textMuted(context),
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.0,
@@ -680,12 +680,12 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             result.tier.description,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.textSecondary(context),
               fontSize: 12.5,
             ),
           ),
           const SizedBox(height: 16),
-          Divider(color: AppTheme.cardBorder, height: 1),
+          Divider(color: AppTheme.cardBorder(context), height: 1),
           const SizedBox(height: 14),
 
           // Balanced 2-Column Stats (No right overflow)
@@ -742,7 +742,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                         Text(
                           'Daily Limit Used',
                           style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: AppTheme.textSecondary(context),
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -762,7 +762,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: limitRatio,
-                        backgroundColor: AppTheme.background,
+                        backgroundColor: AppTheme.background(context),
                         valueColor: AlwaysStoppedAnimation<Color>(limitColor),
                         minHeight: 7,
                       ),
@@ -788,7 +788,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             Text(
               value,
               style: TextStyle(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimary(context),
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
               ),
@@ -802,7 +802,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
             Text(
               label,
               style: TextStyle(
-                color: AppTheme.textMuted,
+                color: AppTheme.textMuted(context),
                 fontSize: 11,
               ),
             ),
@@ -834,10 +834,10 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: hasPasses ? AppTheme.cardBorder : AppTheme.warningAmber.withValues(alpha: 0.35),
+          color: hasPasses ? AppTheme.cardBorder(context) : AppTheme.warningAmber.withValues(alpha: 0.35),
         ),
       ),
       child: Row(
@@ -860,7 +860,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                       ? '$_remainingPasses Extra Unlock ${_remainingPasses == 1 ? "Pass" : "Passes"} Left'
                       : 'No Passes Left • Earn Pass',
                   style: TextStyle(
-                    color: hasPasses ? AppTheme.textPrimary : AppTheme.warningAmber,
+                    color: hasPasses ? AppTheme.textPrimary(context) : AppTheme.warningAmber,
                     fontSize: 14.5,
                     fontWeight: FontWeight.w700,
                   ),
@@ -870,14 +870,14 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                   hasPasses
                       ? 'Temporary unlock after daily limit'
                       : 'Watch a quick ad to get an Extra Unlock Pass',
-                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 11.5),
+                  style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 11.5),
                 ),
               ],
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: hasPasses ? AppTheme.background : AppTheme.cyan.withValues(alpha: 0.15),
+              backgroundColor: hasPasses ? AppTheme.background(context) : AppTheme.cyan.withValues(alpha: 0.15),
               foregroundColor: AppTheme.cyan,
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -914,9 +914,9 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorder(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -927,7 +927,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               Text(
                 'Today\'s App Usage',
                 style: TextStyle(
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.textPrimary(context),
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -946,7 +946,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                 child: Text(
                   'No monitored apps selected.\nTap below to choose apps to track.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 13),
                 ),
               ),
             )
@@ -975,7 +975,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: AppTheme.textPrimary,
+                              color: AppTheme.textPrimary(context),
                               fontSize: 13.5,
                               fontWeight: FontWeight.w600,
                             ),
@@ -987,7 +987,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                               ? 'Adult: ${adultMinutes}m • 🧸 Kids: ${kidsMinutes}m'
                               : '$totalMinutes min',
                           style: TextStyle(
-                            color: kidsMinutes > 0 ? AppTheme.cyan : AppTheme.textSecondary,
+                            color: kidsMinutes > 0 ? AppTheme.cyan : AppTheme.textSecondary(context),
                             fontSize: 12.5,
                             fontWeight: FontWeight.w700,
                           ),
@@ -997,7 +997,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                     const SizedBox(height: 6),
                     LinearProgressIndicator(
                       value: progress,
-                      backgroundColor: AppTheme.background,
+                      backgroundColor: AppTheme.background(context),
                       color: progress > 0.8 ? AppTheme.glitchCoral : AppTheme.mint,
                       minHeight: 6,
                       borderRadius: BorderRadius.circular(3),
@@ -1028,7 +1028,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           ],
 
           const SizedBox(height: 12),
-          Divider(color: AppTheme.cardBorder, height: 1),
+          Divider(color: AppTheme.cardBorder(context), height: 1),
           const SizedBox(height: 14),
 
           // Prominent, clear button to Add or Remove Monitored Apps
@@ -1073,7 +1073,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppTheme.cyan.withValues(alpha: 0.45), width: 1.2),
       ),
@@ -1098,7 +1098,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                     Text(
                       'Kids Mode (Child Hand-Off)',
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimary(context),
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
@@ -1121,7 +1121,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           Text(
             'Hand your phone to your child safely. Only your allowed apps work until the timer ends, and their usage will never affect your Adult Brain Fog or Daily Limit.',
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppTheme.textSecondary(context),
               fontSize: 12,
               height: 1.35,
             ),
@@ -1193,7 +1193,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceCard,
+            color: AppTheme.surfaceCard(context),
             borderRadius: BorderRadius.circular(28),
             border: Border.all(color: timerColor.withValues(alpha: 0.6), width: 1.5),
           ),
@@ -1233,7 +1233,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                     : 'Remaining out of $_kidsLimitMinutes minutes allowed',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppTheme.textSecondary,
+                  color: AppTheme.textSecondary(context),
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -1244,7 +1244,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                 child: LinearProgressIndicator(
                   value: ratio,
                   minHeight: 10,
-                  backgroundColor: AppTheme.background,
+                  backgroundColor: AppTheme.background(context),
                   valueColor: AlwaysStoppedAnimation<Color>(timerColor),
                 ),
               ),
@@ -1252,9 +1252,9 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.background,
+                  color: AppTheme.background(context),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppTheme.cardBorder),
+                  border: Border.all(color: AppTheme.cardBorder(context)),
                 ),
                 child: Row(
                   children: [
@@ -1264,7 +1264,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                       child: Text(
                         'Adult Dashboard, Settings & Daily Limit are paused and protected while Kids Mode is active.',
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondary(context),
                           fontSize: 11.5,
                           height: 1.35,
                         ),
@@ -1282,9 +1282,9 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceCard,
+            color: AppTheme.surfaceCard(context),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppTheme.cardBorder),
+            border: Border.all(color: AppTheme.cardBorder(context)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1298,7 +1298,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimary(context),
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
@@ -1326,7 +1326,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
               if (_kidsAllowedPackages.isEmpty)
                 Text(
                   'No apps allowed in this session.',
-                  style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 13),
                 )
               else
                 Wrap(
@@ -1349,7 +1349,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                           Text(
                             appName,
                             style: TextStyle(
-                              color: AppTheme.textPrimary,
+                              color: AppTheme.textPrimary(context),
                               fontSize: 12.5,
                               fontWeight: FontWeight.w700,
                             ),

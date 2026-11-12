@@ -17,14 +17,10 @@ void main() async {
   final savedTheme = prefs.getString('app_theme_mode') ?? 'system';
   if (savedTheme == 'light') {
     appThemeModeNotifier.value = ThemeMode.light;
-    AppTheme.setBrightness(Brightness.light);
   } else if (savedTheme == 'dark') {
     appThemeModeNotifier.value = ThemeMode.dark;
-    AppTheme.setBrightness(Brightness.dark);
   } else {
     appThemeModeNotifier.value = ThemeMode.system;
-    final platformBrightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
-    AppTheme.setBrightness(platformBrightness);
   }
 
   runApp(const DefogMindRootApp());
@@ -37,14 +33,6 @@ Future<void> updateAppThemeMode(ThemeMode mode) async {
       ? 'light'
       : (mode == ThemeMode.dark ? 'dark' : 'system');
   await prefs.setString('app_theme_mode', modeStr);
-
-  if (mode == ThemeMode.light) {
-    AppTheme.setBrightness(Brightness.light);
-  } else if (mode == ThemeMode.dark) {
-    AppTheme.setBrightness(Brightness.dark);
-  } else {
-    AppTheme.setBrightness(WidgetsBinding.instance.platformDispatcher.platformBrightness);
-  }
 }
 
 class DefogMindRootApp extends StatefulWidget {
@@ -67,7 +55,6 @@ class _DefogMindRootAppState extends State<DefogMindRootApp> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Precache the small logo asset on the very first frame so it never pops in blank
     precacheImage(const AssetImage('assets/images/app_logo.png'), context);
   }
 
@@ -118,34 +105,29 @@ class _DefogMindRootAppState extends State<DefogMindRootApp> {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: appThemeModeNotifier,
       builder: (context, currentThemeMode, _) {
-        final platformBrightness = MediaQuery.platformBrightnessOf(context);
-        final effectiveBrightness = currentThemeMode == ThemeMode.system
-            ? platformBrightness
-            : (currentThemeMode == ThemeMode.dark ? Brightness.dark : Brightness.light);
-
-        AppTheme.setBrightness(effectiveBrightness);
-
-        final bool isEffectiveDark = effectiveBrightness == Brightness.dark;
-
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: isEffectiveDark ? Brightness.light : Brightness.dark,
-            systemNavigationBarColor: isEffectiveDark ? const Color(0xFF0B0F17) : const Color(0xFFF8FAFC),
-            systemNavigationBarIconBrightness: isEffectiveDark ? Brightness.light : Brightness.dark,
-          ),
-          child: MaterialApp(
-            title: 'DefogMind: Screen Time & Focus',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: currentThemeMode,
-            home: _isChecking
-                ? const _BrandedSplashScreen()
-                : (_needsOnboarding
-                    ? const OnboardingDisclosureScreen()
-                    : const HomeDashboard()),
-          ),
+        return MaterialApp(
+          title: 'DefogMind: Screen Time & Focus',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: currentThemeMode,
+          builder: (context, child) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+                systemNavigationBarColor: isDark ? const Color(0xFF0B0F17) : const Color(0xFFF8FAFC),
+                systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+          home: _isChecking
+              ? const _BrandedSplashScreen()
+              : (_needsOnboarding
+                  ? const OnboardingDisclosureScreen()
+                  : const HomeDashboard()),
         );
       },
     );
@@ -157,8 +139,10 @@ class _BrandedSplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.background(context),
       body: SafeArea(
         child: Stack(
           children: [
@@ -166,7 +150,6 @@ class _BrandedSplashScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Simple Clean Brain Logo (Larger, no circle border or extra effects)
                   Image.asset(
                     'assets/images/app_logo.png',
                     width: 170,
@@ -174,21 +157,19 @@ class _BrandedSplashScreen extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 24),
-
-                  // App Title
                   RichText(
                     text: TextSpan(
                       children: [
                         TextSpan(
                           text: 'Defog',
                           style: TextStyle(
-                            color: AppTheme.textPrimary,
+                            color: AppTheme.textPrimary(context),
                             fontSize: 32,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1.5,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: 'Mind',
                           style: TextStyle(
                             color: AppTheme.mint,
@@ -201,37 +182,32 @@ class _BrandedSplashScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-
-                  // Subtitle
                   Text(
                     'Clear Mind • Focused Life',
                     style: TextStyle(
-                      color: AppTheme.textSecondary,
+                      color: AppTheme.textSecondary(context),
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.8,
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Lightweight Linear Loading Indicator
                   SizedBox(
                     width: 140,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(6),
                       child: LinearProgressIndicator(
-                        backgroundColor: AppTheme.surfaceCard,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppTheme.mint),
+                        backgroundColor: isDark ? const Color(0xFF161E2E) : const Color(0xFFE2E8F0),
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.mint),
                         minHeight: 3.5,
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
-
                   Text(
                     'Preparing focus engine...',
                     style: TextStyle(
-                      color: AppTheme.textMuted,
+                      color: AppTheme.textMuted(context),
                       fontSize: 11,
                       letterSpacing: 0.5,
                     ),
@@ -239,8 +215,6 @@ class _BrandedSplashScreen extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Bottom Brand Footnote
             Positioned(
               left: 0,
               right: 0,
@@ -249,7 +223,7 @@ class _BrandedSplashScreen extends StatelessWidget {
                 child: Text(
                   'SCREEN TIME & DIGITAL WELLBEING',
                   style: TextStyle(
-                    color: AppTheme.textMuted,
+                    color: AppTheme.textMuted(context),
                     fontSize: 9.5,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.2,

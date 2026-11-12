@@ -100,10 +100,10 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           decoration: BoxDecoration(
-            color: isActive ? AppTheme.cyan.withValues(alpha: 0.15) : AppTheme.surfaceCard,
+            color: isActive ? AppTheme.cyan.withValues(alpha: 0.15) : AppTheme.surfaceCard(context),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isActive ? AppTheme.cyan : AppTheme.cardBorder,
+              color: isActive ? AppTheme.cyan : AppTheme.cardBorder(context),
               width: isActive ? 1.5 : 1,
             ),
           ),
@@ -113,7 +113,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
               Icon(
                 icon,
                 size: 16,
-                color: isActive ? AppTheme.cyan : AppTheme.textSecondary,
+                color: isActive ? AppTheme.cyan : AppTheme.textSecondary(context),
               ),
               const SizedBox(width: 6),
               Flexible(
@@ -122,7 +122,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: isActive ? AppTheme.cyan : AppTheme.textSecondary,
+                    color: isActive ? AppTheme.cyan : AppTheme.textSecondary(context),
                     fontSize: 13,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   ),
@@ -159,7 +159,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.background(context),
       appBar: AppBar(
         title: const Text('🧸 Kids Mode Setup'),
         actions: [
@@ -217,9 +217,9 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                   margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceCard,
+                    color: AppTheme.surfaceCard(context),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.cardBorder),
+                    border: Border.all(color: AppTheme.cardBorder(context)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,7 +230,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                           Text(
                             'KIDS SESSION TIME LIMIT',
                             style: TextStyle(
-                              color: AppTheme.textMuted,
+                              color: AppTheme.textMuted(context),
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.8,
@@ -257,17 +257,17 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppTheme.cyan.withValues(alpha: 0.2) : AppTheme.background,
+                                color: isSelected ? AppTheme.cyan.withValues(alpha: 0.2) : AppTheme.background(context),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isSelected ? AppTheme.cyan : AppTheme.cardBorder,
+                                  color: isSelected ? AppTheme.cyan : AppTheme.cardBorder(context),
                                   width: isSelected ? 1.5 : 1,
                                 ),
                               ),
                               child: Text(
                                 '${mins}m',
                                 style: TextStyle(
-                                  color: isSelected ? AppTheme.cyan : AppTheme.textSecondary,
+                                  color: isSelected ? AppTheme.cyan : AppTheme.textSecondary(context),
                                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                                   fontSize: 12.5,
                                 ),
@@ -292,7 +292,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                               child: Text(
                                 'Select the ONLY apps your child can use below. All other apps on your phone will be automatically locked during Kids Mode.',
                                 style: TextStyle(
-                                  color: AppTheme.textSecondary,
+                                  color: AppTheme.textSecondary(context),
                                   fontSize: 11.5,
                                   height: 1.35,
                                 ),
@@ -311,21 +311,21 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                   child: Column(
                     children: [
                       TextField(
-                        style: TextStyle(color: AppTheme.textPrimary),
+                        style: TextStyle(color: AppTheme.textPrimary(context)),
                         decoration: InputDecoration(
                           hintText: 'Search apps to allow for kids...',
-                          hintStyle: TextStyle(color: AppTheme.textMuted),
-                          prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
+                          hintStyle: TextStyle(color: AppTheme.textMuted(context)),
+                          prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary(context)),
                           filled: true,
-                          fillColor: AppTheme.surfaceCard,
+                          fillColor: AppTheme.surfaceCard(context),
                           contentPadding: const EdgeInsets.symmetric(vertical: 10),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: AppTheme.cardBorder),
+                            borderSide: BorderSide(color: AppTheme.cardBorder(context)),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: AppTheme.cardBorder),
+                            borderSide: BorderSide(color: AppTheme.cardBorder(context)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -353,7 +353,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                       ? Center(
                           child: Text(
                             'No matching apps found.',
-                            style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+                            style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 14),
                           ),
                         )
                       : ListView.builder(
@@ -370,10 +370,10 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                               decoration: BoxDecoration(
                                 color: isAllowed
                                     ? AppTheme.cyan.withValues(alpha: 0.08)
-                                    : AppTheme.surfaceCard,
+                                    : AppTheme.surfaceCard(context),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: isAllowed ? AppTheme.cyan : AppTheme.cardBorder,
+                                  color: isAllowed ? AppTheme.cyan : AppTheme.cardBorder(context),
                                   width: isAllowed ? 1.5 : 1,
                                 ),
                               ),
@@ -389,7 +389,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: AppTheme.textPrimary,
+                                          color: AppTheme.textPrimary(context),
                                           fontWeight: isAllowed ? FontWeight.w700 : FontWeight.w600,
                                           fontSize: 15,
                                         ),
@@ -420,7 +420,7 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                                   pkg,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 11.5),
+                                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 11.5),
                                 ),
                                 onChanged: (checked) {
                                   setState(() {
@@ -441,8 +441,8 @@ class _KidsModeSetupScreenState extends State<KidsModeSetupScreen> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceCard,
-                    border: Border(top: BorderSide(color: AppTheme.cardBorder)),
+                    color: AppTheme.surfaceCard(context),
+                    border: Border(top: BorderSide(color: AppTheme.cardBorder(context))),
                   ),
                   child: SizedBox(
                     width: double.infinity,

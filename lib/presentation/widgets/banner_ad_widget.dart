@@ -60,8 +60,8 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
         width: _bannerAd!.size.width.toDouble(),
         height: _bannerAd!.size.height.toDouble(),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceCard,
-          border: Border.all(color: AppTheme.cardBorder, width: 1),
+          color: AppTheme.surfaceCard(context),
+          border: Border.all(color: AppTheme.cardBorder(context), width: 1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: AdWidget(ad: _bannerAd!),

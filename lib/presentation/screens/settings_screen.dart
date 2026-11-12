@@ -173,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.background(context),
       appBar: AppBar(
         title: const Text('Settings & Focus Engine'),
       ),
@@ -221,9 +221,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceCard,
+                              color: AppTheme.surfaceCard(context),
                               borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: AppTheme.cardBorder),
+                              border: Border.all(color: AppTheme.cardBorder(context)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +233,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   children: [
                                     Text(
                                       'Daily Limit Target',
-                                      style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 14),
+                                      style: TextStyle(color: AppTheme.textPrimary(context), fontWeight: FontWeight.w600, fontSize: 14),
                                     ),
                                     Text(
                                       '$_dailyLimitMinutes mins',
@@ -252,17 +252,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                                         decoration: BoxDecoration(
-                                          color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background,
+                                          color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background(context),
                                           borderRadius: BorderRadius.circular(12),
                                           border: Border.all(
-                                            color: isSelected ? AppTheme.mint : AppTheme.cardBorder,
+                                            color: isSelected ? AppTheme.mint : AppTheme.cardBorder(context),
                                             width: isSelected ? 1.5 : 1,
                                           ),
                                         ),
                                         child: Text(
                                           '${mins}m',
                                           style: TextStyle(
-                                            color: isSelected ? AppTheme.mint : AppTheme.textSecondary,
+                                            color: isSelected ? AppTheme.mint : AppTheme.textSecondary(context),
                                             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                             fontSize: 12.5,
                                           ),
@@ -278,7 +278,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   max: 240,
                                   divisions: 15,
                                   activeColor: AppTheme.mint,
-                                  inactiveColor: AppTheme.background,
+                                  inactiveColor: AppTheme.background(context),
                                   onChanged: (val) {
                                     _updateLimit(val.round());
                                   },
@@ -297,16 +297,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceCard,
+                              color: AppTheme.surfaceCard(context),
                               borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: AppTheme.cardBorder),
+                              border: Border.all(color: AppTheme.cardBorder(context)),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'Active time granted per extra unlock:',
-                                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                                  style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13),
                                 ),
                                 const SizedBox(height: 14),
                                 Row(
@@ -321,7 +321,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 const SizedBox(height: 10),
                                 Text(
                                   'Note: Dual-clock engine pauses when social app is closed, with a 15-minute absolute ceiling.',
-                                  style: TextStyle(color: AppTheme.textMuted, fontSize: 11, fontStyle: FontStyle.italic),
+                                  style: TextStyle(color: AppTheme.textMuted(context), fontSize: 11, fontStyle: FontStyle.italic),
                                 ),
                               ],
                             ),
@@ -337,9 +337,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppTheme.surfaceCard,
+                              color: AppTheme.surfaceCard(context),
                               borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: AppTheme.cardBorder),
+                              border: Border.all(color: AppTheme.cardBorder(context)),
                             ),
                             child: Row(
                               children: [
@@ -365,7 +365,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             ? '$_remainingPasses Passes Left Today'
                                             : 'No Passes Left • Earn Pass',
                                         style: TextStyle(
-                                          color: _remainingPasses > 0 ? AppTheme.textPrimary : AppTheme.warningAmber,
+                                          color: _remainingPasses > 0 ? AppTheme.textPrimary(context) : AppTheme.warningAmber,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 14.5,
                                         ),
@@ -373,14 +373,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       const SizedBox(height: 2),
                                       Text(
                                         '2 free resets daily at midnight',
-                                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 11.5),
+                                        style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 11.5),
                                       ),
                                     ],
                                   ),
                                 ),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: _remainingPasses > 0 ? AppTheme.background : AppTheme.cyan.withValues(alpha: 0.15),
+                                    backgroundColor: _remainingPasses > 0 ? AppTheme.background(context) : AppTheme.cyan.withValues(alpha: 0.15),
                                     foregroundColor: AppTheme.cyan,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(14),
@@ -415,30 +415,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildSectionHeader('BACKGROUND PROTECTION'),
                 const SizedBox(height: 8),
                 ListTile(
-                  tileColor: AppTheme.surfaceCard,
+                  tileColor: AppTheme.surfaceCard(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: AppTheme.cardBorder),
+                    side: BorderSide(color: AppTheme.cardBorder(context)),
                   ),
                   leading: const Icon(Icons.battery_saver_outlined, color: AppTheme.mint),
-                  title: Text('Battery Optimization Exemption', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
-                  subtitle: Text('Allow DefogMind to stay active when recent apps are cleared', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+                  title: Text('Battery Optimization Exemption', style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 13.5)),
+                  subtitle: Text('Allow DefogMind to stay active when recent apps are cleared', style: TextStyle(color: AppTheme.textMuted(context), fontSize: 11)),
+                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary(context)),
                   onTap: () async {
                     await UsageService.requestBatteryExemption();
                   },
                 ),
                 const SizedBox(height: 10),
                 ListTile(
-                  tileColor: AppTheme.surfaceCard,
+                  tileColor: AppTheme.surfaceCard(context),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: AppTheme.cardBorder),
+                    side: BorderSide(color: AppTheme.cardBorder(context)),
                   ),
                   leading: const Icon(Icons.settings_suggest_outlined, color: AppTheme.cyan),
-                  title: Text('Device Background Management', style: TextStyle(color: AppTheme.textPrimary, fontSize: 13.5)),
-                  subtitle: Text('Allow background start and auto-launch permissions', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
-                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+                  title: Text('Device Background Management', style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 13.5)),
+                  subtitle: Text('Allow background start and auto-launch permissions', style: TextStyle(color: AppTheme.textMuted(context), fontSize: 11)),
+                  trailing: Icon(Icons.chevron_right, color: AppTheme.textSecondary(context)),
                   onTap: () async {
                     await UsageService.openAutoStartSettings();
                   },
@@ -449,15 +449,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppTheme.background,
+                    color: AppTheme.background(context),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppTheme.cardBorder),
+                    border: Border.all(color: AppTheme.cardBorder(context)),
                   ),
                   child: Text(
                     'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppTheme.textMuted,
+                      color: AppTheme.textMuted(context),
                       fontSize: 11,
                       height: 1.4,
                     ),
@@ -472,23 +472,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
                 decoration: BoxDecoration(
-                  color: AppTheme.background,
-                  border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
+                  color: AppTheme.background(context),
+                  border: Border(top: BorderSide(color: AppTheme.cardBorder(context), width: 1)),
                 ),
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _hasUnsavedChanges ? AppTheme.mint : AppTheme.surfaceCard,
-                      foregroundColor: _hasUnsavedChanges ? Colors.black : AppTheme.textMuted,
-                      disabledBackgroundColor: AppTheme.surfaceCard,
-                      disabledForegroundColor: AppTheme.textMuted,
+                      backgroundColor: _hasUnsavedChanges ? AppTheme.mint : AppTheme.surfaceCard(context),
+                      foregroundColor: _hasUnsavedChanges ? Colors.black : AppTheme.textMuted(context),
+                      disabledBackgroundColor: AppTheme.surfaceCard(context),
+                      disabledForegroundColor: AppTheme.textMuted(context),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                         side: BorderSide(
-                          color: _hasUnsavedChanges ? AppTheme.mint : AppTheme.cardBorder,
+                          color: _hasUnsavedChanges ? AppTheme.mint : AppTheme.cardBorder(context),
                         ),
                       ),
                     ),
@@ -508,7 +508,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Text(
       title,
       style: TextStyle(
-        color: AppTheme.textSecondary,
+        color: AppTheme.textSecondary(context),
         fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.8,
@@ -521,7 +521,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: _isAdultTrackingEnabled
@@ -554,7 +554,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Text(
                         'My App Tracking',
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: AppTheme.textPrimary(context),
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
                         ),
@@ -584,7 +584,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ? 'Active • Monitoring your apps & Brain Fog'
                       : 'Paused • Kids Mode still works anytime',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.textSecondary(context),
                     fontSize: 11.5,
                   ),
                 ),
@@ -609,9 +609,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceCard,
+            color: AppTheme.surfaceCard(context),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppTheme.cardBorder),
+            border: Border.all(color: AppTheme.cardBorder(context)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -625,7 +625,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Text(
                         'Appearance',
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: AppTheme.textPrimary(context),
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
                         ),
@@ -634,7 +634,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Text(
                         'Customize app look and feel',
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondary(context),
                           fontSize: 11.5,
                         ),
                       ),
@@ -680,10 +680,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required IconData icon,
     required bool isSelected,
   }) {
-    final isDark = AppTheme.isDark;
+    final isDark = AppTheme.isDark(context);
     final unselectedBg = isDark ? const Color(0xFF0B0F17) : const Color(0xFFF1F5F9);
-    final unselectedBorder = isDark ? AppTheme.cardBorder : const Color(0xFFCBD5E1);
-    final unselectedText = isDark ? AppTheme.textSecondary : const Color(0xFF475569);
+    final unselectedBorder = isDark ? AppTheme.cardBorder(context) : const Color(0xFFCBD5E1);
+    final unselectedText = isDark ? AppTheme.textSecondary(context) : const Color(0xFF475569);
 
     return Expanded(
       child: GestureDetector(
@@ -726,9 +726,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorder(context)),
       ),
       child: Row(
         children: [
@@ -777,13 +777,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icon(
                     icon,
                     size: 16,
-                    color: isSelected ? AppTheme.mint : AppTheme.textMuted,
+                    color: isSelected ? AppTheme.mint : AppTheme.textMuted(context),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     title,
                     style: TextStyle(
-                      color: isSelected ? AppTheme.textPrimary : AppTheme.textSecondary,
+                      color: isSelected ? AppTheme.textPrimary(context) : AppTheme.textSecondary(context),
                       fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                       fontSize: 12.5,
                     ),
@@ -794,7 +794,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: isSelected ? AppTheme.mint : AppTheme.textMuted,
+                  color: isSelected ? AppTheme.mint : AppTheme.textMuted(context),
                   fontSize: 10,
                 ),
               ),
@@ -808,9 +808,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildMonitoredAppsTile() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorder(context)),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -825,7 +825,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: Text(
           'Manage Monitored Apps',
           style: TextStyle(
-            color: AppTheme.textPrimary,
+            color: AppTheme.textPrimary(context),
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
@@ -833,7 +833,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         subtitle: Text(
           _isNavigatingToApps ? 'Loading installed apps...' : '${_monitoredPackages.length} social apps configured',
           style: TextStyle(
-            color: _isNavigatingToApps ? AppTheme.mint : AppTheme.textSecondary,
+            color: _isNavigatingToApps ? AppTheme.mint : AppTheme.textSecondary(context),
             fontSize: 12,
             fontWeight: _isNavigatingToApps ? FontWeight.w600 : FontWeight.w400,
           ),
@@ -844,7 +844,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 height: 18,
                 child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.mint),
               )
-            : Icon(Icons.chevron_right, color: AppTheme.textSecondary),
+            : Icon(Icons.chevron_right, color: AppTheme.textSecondary(context)),
         onTap: _isNavigatingToApps
             ? null
             : () async {
@@ -885,9 +885,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceCard.withValues(alpha: 0.95),
+                color: AppTheme.surfaceCard(context).withValues(alpha: 0.95),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.cardBorder),
+                border: Border.all(color: AppTheme.cardBorder(context)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.4),
@@ -905,7 +905,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     child: Text(
                       'Limit Mode Only: $explanation',
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimary(context),
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                       ),
@@ -929,17 +929,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.background,
+            color: isSelected ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.background(context),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isSelected ? AppTheme.mint : AppTheme.cardBorder,
+              color: isSelected ? AppTheme.mint : AppTheme.cardBorder(context),
               width: isSelected ? 1.5 : 1,
             ),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppTheme.mint : AppTheme.textSecondary,
+              color: isSelected ? AppTheme.mint : AppTheme.textSecondary(context),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               fontSize: 13,
             ),

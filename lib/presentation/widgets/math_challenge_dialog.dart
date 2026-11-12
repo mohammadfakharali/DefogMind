@@ -103,10 +103,10 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
     final problemText = '$_num1 $operatorSign $_num2 = ?';
 
     return AlertDialog(
-      backgroundColor: AppTheme.surfaceCard,
+      backgroundColor: AppTheme.surfaceCard(context),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(22),
-        side: BorderSide(color: AppTheme.cardBorder),
+        side: BorderSide(color: AppTheme.cardBorder(context)),
       ),
       title: Row(
         children: [
@@ -121,7 +121,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
           const SizedBox(width: 12),
           Text(
             widget.title,
-            style: TextStyle(color: AppTheme.textPrimary, fontSize: 17, fontWeight: FontWeight.w700),
+            style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 17, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -132,16 +132,16 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
           children: [
             Text(
               'Solve this quick calculation to ${widget.actionDescription}:',
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 13, height: 1.4),
+              style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13, height: 1.4),
             ),
             const SizedBox(height: 18),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               decoration: BoxDecoration(
-                color: AppTheme.background,
+                color: AppTheme.background(context),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppTheme.cardBorder),
+                border: Border.all(color: AppTheme.cardBorder(context)),
               ),
               child: Center(
                 child: Text(
@@ -160,19 +160,19 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
               controller: _controller,
               focusNode: _focusNode,
               keyboardType: TextInputType.number,
-              style: TextStyle(color: AppTheme.textPrimary, fontSize: 18, fontWeight: FontWeight.w700),
+              style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 18, fontWeight: FontWeight.w700),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hintText: 'Enter answer',
-                hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 14),
+                hintStyle: TextStyle(color: AppTheme.textMuted(context), fontSize: 14),
                 filled: true,
-                fillColor: AppTheme.background,
+                fillColor: AppTheme.background(context),
                 errorText: _errorMessage,
                 errorStyle: const TextStyle(color: AppTheme.glitchCoral, fontSize: 11),
                 contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: AppTheme.cardBorder),
+                  borderSide: BorderSide(color: AppTheme.cardBorder(context)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -187,7 +187,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
+          child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted(context))),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(

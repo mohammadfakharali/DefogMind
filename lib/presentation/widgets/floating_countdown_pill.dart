@@ -26,7 +26,7 @@ class FloatingCountdownPillWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceCard.withValues(alpha: 0.92),
+          color: AppTheme.surfaceCard(context).withValues(alpha: 0.92),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
             color: isPaused ? AppTheme.warningAmber : AppTheme.mint,

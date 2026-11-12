@@ -138,7 +138,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
       isDismissible: false,
       enableDrag: false,
       isScrollControlled: true,
-      backgroundColor: AppTheme.surfaceCard,
+      backgroundColor: AppTheme.surfaceCard(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -170,7 +170,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                       child: Text(
                         title,
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: AppTheme.textPrimary(context),
                           fontSize: 16.5,
                           fontWeight: FontWeight.w700,
                         ),
@@ -182,14 +182,14 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppTheme.background,
+                    color: AppTheme.background(context),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.cardBorder, width: 1),
+                    border: Border.all(color: AppTheme.cardBorder(context), width: 1),
                   ),
                   child: Text(
                     message,
                     style: TextStyle(
-                      color: AppTheme.textSecondary,
+                      color: AppTheme.textSecondary(context),
                       fontSize: 12.5,
                       height: 1.45,
                     ),
@@ -329,7 +329,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: AppTheme.background(context),
         body: SafeArea(
           child: _currentStep == 0 ? _buildPreferencesStep() : _buildPermissionsStep(),
         ),
@@ -371,7 +371,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Text(
                   'Activate DefogMind',
                   style: TextStyle(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimary(context),
                     fontSize: 26,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
@@ -380,7 +380,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 const SizedBox(height: 6),
                 Text(
                   'Allow permissions to locally track your selected apps and show your focus shield.',
-                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5, height: 1.4),
+                  style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13.5, height: 1.4),
                 ),
                 const SizedBox(height: 14),
 
@@ -404,7 +404,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                             Text(
                               '100% On-Device Privacy Guarantee',
                               style: TextStyle(
-                                color: AppTheme.textPrimary,
+                                color: AppTheme.textPrimary(context),
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -413,7 +413,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                             Text(
                               'Your app usage and screen-time data never leave your phone. All tracking is processed 100% locally on your device—we never collect, upload, or share your personal data with any external server.',
                               style: TextStyle(
-                                color: AppTheme.textSecondary,
+                                color: AppTheme.textSecondary(context),
                                 fontSize: 11.5,
                                 height: 1.38,
                               ),
@@ -429,7 +429,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Text(
                   'REQUIRED',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.textSecondary(context),
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
@@ -457,7 +457,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Text(
                   'RECOMMENDED',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.textSecondary(context),
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
@@ -489,8 +489,8 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         Container(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
           decoration: BoxDecoration(
-            color: AppTheme.background,
-            border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
+            color: AppTheme.background(context),
+            border: Border(top: BorderSide(color: AppTheme.cardBorder(context), width: 1)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -498,7 +498,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
               Text(
                 'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: AppTheme.textMuted, fontSize: 9.5, height: 1.25),
+                style: TextStyle(color: AppTheme.textMuted(context), fontSize: 9.5, height: 1.25),
               ),
               const SizedBox(height: 8),
               SizedBox(
@@ -506,15 +506,15 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 height: 46,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: canProceed ? AppTheme.mint : AppTheme.surfaceCard,
-                    foregroundColor: canProceed ? Colors.black : AppTheme.textMuted,
-                    disabledBackgroundColor: _isLaunching ? AppTheme.mint : AppTheme.surfaceCard,
-                    disabledForegroundColor: _isLaunching ? Colors.black : AppTheme.textMuted,
+                    backgroundColor: canProceed ? AppTheme.mint : AppTheme.surfaceCard(context),
+                    foregroundColor: canProceed ? Colors.black : AppTheme.textMuted(context),
+                    disabledBackgroundColor: _isLaunching ? AppTheme.mint : AppTheme.surfaceCard(context),
+                    disabledForegroundColor: _isLaunching ? Colors.black : AppTheme.textMuted(context),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: (canProceed || _isLaunching) ? AppTheme.mint : AppTheme.cardBorder,
+                        color: (canProceed || _isLaunching) ? AppTheme.mint : AppTheme.cardBorder(context),
                         width: 1,
                       ),
                     ),
@@ -616,12 +616,12 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 const SizedBox(height: 14),
                 Text(
                   'How do you want to focus?',
-                  style: TextStyle(color: AppTheme.textPrimary, fontSize: 24, fontWeight: FontWeight.w800),
+                  style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 24, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Choose your preferred focus style. You can change this anytime in Settings.',
-                  style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                  style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13),
                 ),
                 const SizedBox(height: 20),
 
@@ -657,7 +657,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                         Expanded(
                           child: Text(
                             'Awareness Mode selected! DefogMind will monitor your selected apps screen time without locking you from using them.',
-                            style: TextStyle(color: AppTheme.textPrimary, fontSize: 12.5, height: 1.35),
+                            style: TextStyle(color: AppTheme.textPrimary(context), fontSize: 12.5, height: 1.35),
                           ),
                         ),
                       ],
@@ -674,7 +674,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                       Text(
                         'DAILY SOCIAL LIMIT',
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondary(context),
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.8,
@@ -707,7 +707,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                               Text(
                                 'Total Daily Limit',
                                 style: TextStyle(
-                                  color: AppTheme.textPrimary,
+                                  color: AppTheme.textPrimary(context),
                                   fontSize: 13.5,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -738,17 +738,17 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background,
+                                    color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background(context),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: isSelected ? AppTheme.mint : AppTheme.cardBorder,
+                                      color: isSelected ? AppTheme.mint : AppTheme.cardBorder(context),
                                       width: isSelected ? 1.5 : 1,
                                     ),
                                   ),
                                   child: Text(
                                     '${mins}m',
                                     style: TextStyle(
-                                      color: isSelected ? AppTheme.mint : AppTheme.textSecondary,
+                                      color: isSelected ? AppTheme.mint : AppTheme.textSecondary(context),
                                       fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                       fontSize: 12.5,
                                     ),
@@ -764,7 +764,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                             max: 240,
                             divisions: 15,
                             activeColor: _selectedDailyLimit != null ? AppTheme.mint : AppTheme.cyan,
-                            inactiveColor: AppTheme.background,
+                            inactiveColor: AppTheme.background(context),
                             onChanged: (val) => setState(() => _selectedDailyLimit = val.toInt()),
                             onChangeEnd: (val) {
                               if (_selectedBypassDuration == null) {
@@ -784,7 +784,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                       Text(
                         'EXTRA UNLOCK TIME',
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondary(context),
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.8,
@@ -829,23 +829,23 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         Container(
           padding: const EdgeInsets.fromLTRB(22, 12, 22, 16),
           decoration: BoxDecoration(
-            color: AppTheme.background,
-            border: Border(top: BorderSide(color: AppTheme.cardBorder, width: 1)),
+            color: AppTheme.background(context),
+            border: Border(top: BorderSide(color: AppTheme.cardBorder(context), width: 1)),
           ),
           child: SizedBox(
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: canStart ? AppTheme.mint : AppTheme.surfaceCard,
-                foregroundColor: canStart ? Colors.black : AppTheme.textMuted,
-                disabledBackgroundColor: _isLaunching ? AppTheme.mint : AppTheme.surfaceCard,
-                disabledForegroundColor: _isLaunching ? Colors.black : AppTheme.textMuted,
+                backgroundColor: canStart ? AppTheme.mint : AppTheme.surfaceCard(context),
+                foregroundColor: canStart ? Colors.black : AppTheme.textMuted(context),
+                disabledBackgroundColor: _isLaunching ? AppTheme.mint : AppTheme.surfaceCard(context),
+                disabledForegroundColor: _isLaunching ? Colors.black : AppTheme.textMuted(context),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                   side: BorderSide(
-                    color: (canStart || _isLaunching) ? AppTheme.mint : AppTheme.cardBorder,
+                    color: (canStart || _isLaunching) ? AppTheme.mint : AppTheme.cardBorder(context),
                     width: 1,
                   ),
                 ),
@@ -900,10 +900,10 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.mint.withValues(alpha: 0.12) : AppTheme.surfaceCard,
+          color: isSelected ? AppTheme.mint.withValues(alpha: 0.12) : AppTheme.surfaceCard(context),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected ? AppTheme.mint : AppTheme.cardBorder,
+            color: isSelected ? AppTheme.mint : AppTheme.cardBorder(context),
             width: isSelected ? 1.8 : 1.2,
           ),
         ),
@@ -913,7 +913,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.background,
+                color: isSelected ? AppTheme.mint.withValues(alpha: 0.15) : AppTheme.background(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -930,7 +930,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   Text(
                     title,
                     style: TextStyle(
-                      color: AppTheme.textPrimary,
+                      color: AppTheme.textPrimary(context),
                       fontWeight: FontWeight.w700,
                       fontSize: 14.5,
                     ),
@@ -939,7 +939,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   Text(
                     description,
                     style: TextStyle(
-                      color: isSelected ? AppTheme.textSecondary : AppTheme.textMuted,
+                      color: isSelected ? AppTheme.textSecondary(context) : AppTheme.textMuted(context),
                       fontSize: 12,
                       height: 1.35,
                     ),
@@ -950,7 +950,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
             const SizedBox(width: 8),
             Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: isSelected ? AppTheme.mint : AppTheme.textSecondary,
+              color: isSelected ? AppTheme.mint : AppTheme.textSecondary(context),
               size: 22,
             ),
           ],
@@ -963,14 +963,14 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: appThemeModeNotifier,
       builder: (context, currentMode, _) {
-        final isDarkTheme = AppTheme.isDark;
+        final isDarkTheme = AppTheme.isDark(context);
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
           decoration: BoxDecoration(
-            color: isDarkTheme ? AppTheme.surfaceCard : const Color(0xFFF1F5F9),
+            color: isDarkTheme ? AppTheme.surfaceCard(context) : const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isDarkTheme ? AppTheme.cardBorder : const Color(0xFFCBD5E1),
+              color: isDarkTheme ? AppTheme.cardBorder(context) : const Color(0xFFCBD5E1),
               width: 1,
             ),
           ),
@@ -1024,7 +1024,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
             size: 15,
             color: isSelected
                 ? Colors.black
-                : (AppTheme.isDark ? AppTheme.textSecondary : const Color(0xFF64748B)),
+                : (AppTheme.isDark(context) ? AppTheme.textSecondary(context) : const Color(0xFF64748B)),
           ),
         ),
       ),
@@ -1045,17 +1045,17 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
           padding: const EdgeInsets.symmetric(vertical: 12),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background,
+            color: isSelected ? AppTheme.mint.withValues(alpha: 0.18) : AppTheme.background(context),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: isSelected ? AppTheme.mint : AppTheme.cardBorder,
+              color: isSelected ? AppTheme.mint : AppTheme.cardBorder(context),
               width: isSelected ? 1.5 : 1,
             ),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppTheme.mint : AppTheme.textSecondary,
+              color: isSelected ? AppTheme.mint : AppTheme.textSecondary(context),
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               fontSize: 13,
             ),
@@ -1075,10 +1075,10 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceCard,
+        color: AppTheme.surfaceCard(context),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isGranted ? AppTheme.mint.withValues(alpha: 0.4) : AppTheme.cardBorder,
+          color: isGranted ? AppTheme.mint.withValues(alpha: 0.4) : AppTheme.cardBorder(context),
           width: 1,
         ),
       ),
@@ -1087,12 +1087,12 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isGranted ? AppTheme.mint.withValues(alpha: 0.12) : AppTheme.background,
+              color: isGranted ? AppTheme.mint.withValues(alpha: 0.12) : AppTheme.background(context),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(
               icon,
-              color: isGranted ? AppTheme.mint : AppTheme.textSecondary,
+              color: isGranted ? AppTheme.mint : AppTheme.textSecondary(context),
               size: 19,
             ),
           ),
@@ -1104,7 +1104,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Text(
                   title,
                   style: TextStyle(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimary(context),
                     fontSize: 13.5,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1113,7 +1113,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                 Text(
                   description,
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.textSecondary(context),
                     fontSize: 10.5,
                     height: 1.2,
                   ),
@@ -1127,7 +1127,7 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
           else
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.background,
+                backgroundColor: AppTheme.background(context),
                 foregroundColor: AppTheme.mint,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -1150,18 +1150,14 @@ class _MovingCometBorderCard extends StatefulWidget {
   final Widget child;
   final bool isActive;
   final bool isCompleted;
-  final double borderRadius;
-  final double strokeWidth;
-  final Color? backgroundColor;
+  static const double borderRadius = 18.0;
+  static const double strokeWidth = 2.5;
 
   const _MovingCometBorderCard({
     super.key,
     required this.child,
     required this.isActive,
     this.isCompleted = false,
-    this.borderRadius = 18.0,
-    this.strokeWidth = 2.5,
-    this.backgroundColor,
   });
 
   @override
@@ -1207,12 +1203,12 @@ class _MovingCometBorderCardState extends State<_MovingCometBorderCard>
     if (!widget.isActive) {
       return Container(
         decoration: BoxDecoration(
-          color: widget.backgroundColor ?? AppTheme.surfaceCard,
-          borderRadius: BorderRadius.circular(widget.borderRadius),
+          color: AppTheme.surfaceCard(context),
+          borderRadius: BorderRadius.circular(_MovingCometBorderCard.borderRadius),
           border: Border.all(
             color: widget.isCompleted
                 ? AppTheme.mint.withValues(alpha: 0.65)
-                : AppTheme.cardBorder,
+                : AppTheme.cardBorder(context),
             width: widget.isCompleted ? 1.5 : 1.0,
           ),
         ),
@@ -1226,18 +1222,18 @@ class _MovingCometBorderCardState extends State<_MovingCometBorderCard>
         return CustomPaint(
           foregroundPainter: _MovingCometBorderPainter(
             progress: _controller.value,
-            radius: widget.borderRadius,
-            strokeWidth: widget.strokeWidth,
+            radius: _MovingCometBorderCard.borderRadius,
+            strokeWidth: _MovingCometBorderCard.strokeWidth,
             headColor: Colors.white,
             glowColor: AppTheme.cyan,
             tailColor: AppTheme.mint,
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: widget.backgroundColor,
-              borderRadius: BorderRadius.circular(widget.borderRadius),
+              color: AppTheme.surfaceCard(context),
+              borderRadius: BorderRadius.circular(_MovingCometBorderCard.borderRadius),
               border: Border.all(
-                color: AppTheme.cardBorder.withValues(alpha: 0.6),
+                color: AppTheme.cardBorder(context).withValues(alpha: 0.6),
                 width: 1.0,
               ),
             ),

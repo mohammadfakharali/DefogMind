@@ -89,23 +89,23 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppTheme.surfaceCard,
+        backgroundColor: AppTheme.surfaceCard(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: AppTheme.cardBorder),
+          side: BorderSide(color: AppTheme.cardBorder(context)),
         ),
         title: Text(
           'Daily Passes Finished',
-          style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w700),
+          style: TextStyle(color: AppTheme.textPrimary(context), fontWeight: FontWeight.w700),
         ),
         content: Text(
           'You have used your 2 free daily Extra Unlock Passes. Would you like to get 1 extra pass by watching a short video?',
-          style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5),
+          style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13.5),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted)),
+            child: Text('Cancel', style: TextStyle(color: AppTheme.textMuted(context))),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -156,7 +156,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: AppTheme.background(context),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -187,7 +187,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                     Text(
                       '${widget.blockedAppName} is Blocked',
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimary(context),
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                       ),
@@ -196,7 +196,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                     Text(
                       'You have reached your daily screen time limit. Take a short pause and breathe.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppTheme.textSecondary, fontSize: 13.5, height: 1.4),
+                      style: TextStyle(color: AppTheme.textSecondary(context), fontSize: 13.5, height: 1.4),
                     ),
                   ],
                 ),
@@ -231,7 +231,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                               child: Text(
                                 _isFrictionGateOpen ? '✓' : '${_secondsRemaining}s',
                                 style: TextStyle(
-                                  color: _isFrictionGateOpen ? AppTheme.mint : AppTheme.textPrimary,
+                                  color: _isFrictionGateOpen ? AppTheme.mint : AppTheme.textPrimary(context),
                                   fontSize: 32,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -259,7 +259,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                       _isFrictionGateOpen
                           ? '$_remainingPasses extra unlock ${_remainingPasses == 1 ? "pass" : "passes"} remaining today'
                           : 'Sit with the breath for 10 seconds before unlocking',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                      style: TextStyle(color: AppTheme.textMuted(context), fontSize: 12),
                     ),
                   ],
                 ),
@@ -273,8 +273,8 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                       height: 64,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _isFrictionGateOpen ? AppTheme.mint : AppTheme.surfaceCard,
-                          foregroundColor: _isFrictionGateOpen ? Colors.black : AppTheme.textMuted,
+                          backgroundColor: _isFrictionGateOpen ? AppTheme.mint : AppTheme.surfaceCard(context),
+                          foregroundColor: _isFrictionGateOpen ? Colors.black : AppTheme.textMuted(context),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                         ),
                         onPressed: _isFrictionGateOpen ? _claimEmergencyBypass : null,
@@ -290,7 +290,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                               '(Extra unlock)',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: _isFrictionGateOpen ? Colors.black87 : AppTheme.textMuted,
+                                color: _isFrictionGateOpen ? Colors.black87 : AppTheme.textMuted(context),
                               ),
                             ),
                           ],
@@ -305,7 +305,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppTheme.cyan,
-                          side: BorderSide(color: AppTheme.cardBorder),
+                          side: BorderSide(color: AppTheme.cardBorder(context)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
                         ),
                         onPressed: _exitToHome,
@@ -313,7 +313,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text('Leave The App', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-                            Text('(Go To Home)', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                            Text('(Go To Home)', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary(context))),
                           ],
                         ),
                       ),
@@ -322,7 +322,7 @@ class _OverlayBlockScreenState extends State<OverlayBlockScreen>
                     Text(
                       'DefogMind is a digital habit and productivity utility. It does not provide medical advice, diagnosis, or treatment for cognitive conditions.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 10, height: 1.3),
+                      style: TextStyle(color: AppTheme.textMuted(context), fontSize: 10, height: 1.3),
                     ),
                   ],
                 ),
