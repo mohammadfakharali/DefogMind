@@ -597,8 +597,11 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
   }
 
   Widget _buildBrainFogCard(FogCalculationResult result) {
+    final displayTier = result.tier;
+    final displayFog = result.fogPercentage;
+
     final Color badgeColor;
-    switch (result.tier) {
+    switch (displayTier) {
       case FogTier.cleanMind:
         badgeColor = AppTheme.mint;
         break;
@@ -643,7 +646,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                   border: Border.all(color: badgeColor.withValues(alpha: 0.3)),
                 ),
                 child: Text(
-                  '${result.tier.meterLabel} • ${result.fogPercentage.toStringAsFixed(0)}% Fog',
+                  '${displayTier.meterLabel} • ${displayFog.toStringAsFixed(0)}% Fog',
                   style: TextStyle(
                     color: badgeColor,
                     fontSize: 12,
@@ -658,16 +661,16 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           // Vector Brain CustomPainter
           Center(
             child: BrainFogVisualizer(
-              fogPercentage: result.fogPercentage,
-              tier: result.tier,
-              size: 220,
+              fogPercentage: displayFog,
+              tier: displayTier,
+              size: 240,
             ),
           ),
           const SizedBox(height: 12),
 
           // Status centered below brain (prevents horizontal overflow!)
           Text(
-            result.tier.title,
+            displayTier.title,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: badgeColor,
@@ -677,7 +680,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
           ),
           const SizedBox(height: 2),
           Text(
-            result.tier.description,
+            displayTier.description,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppTheme.textSecondary(context),

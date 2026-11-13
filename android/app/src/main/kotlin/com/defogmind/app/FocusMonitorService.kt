@@ -215,7 +215,7 @@ class FocusMonitorService : Service() {
     // Movable Floating HUD / Pill Overlay
     private var floatingPillView: View? = null
     private var floatingPillPrefixText: TextView? = null
-    private var floatingPillBrainEmoji: TextView? = null
+    private var floatingPillBrainCharacter: BrainCharacterView? = null
     private var floatingPillSuffixText: TextView? = null
     private var pillLayoutParams: WindowManager.LayoutParams? = null
     private var hasUserMovedPill = false
@@ -1068,14 +1068,17 @@ class FocusMonitorService : Service() {
         if (floatingPillView == null) {
             val isDark = PassStorage.isDarkTheme(this)
             val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
+            val density = resources.displayMetrics.density
+            val padH = (14 * density).toInt()
+            val padV = (7 * density).toInt()
             val root = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                setPadding(32, 14, 32, 14)
+                setPadding(padH, padV, padH, padV)
                 val shape = GradientDrawable().apply {
                     setColor(pillBgColor)
                     setStroke(2, accentColor)
-                    cornerRadius = 40f
+                    cornerRadius = 40f * density
                 }
                 background = shape
                 if (animateFadeIn) {
@@ -1086,31 +1089,34 @@ class FocusMonitorService : Service() {
             val prefixView = TextView(this).apply {
                 text = prefix
                 setTextColor(accentColor)
-                textSize = 13f
+                textSize = 13.5f
                 typeface = android.graphics.Typeface.DEFAULT_BOLD
                 visibility = if (prefix.isNotEmpty()) View.VISIBLE else View.GONE
             }
             root.addView(prefixView)
             floatingPillPrefixText = prefixView
 
-            val brainEmojiView = TextView(this).apply {
-                text = "\uD83E\uDDE0" // 🧠 Authentic Unicode brain emoji (full-color 3D shaded)
-                textSize = 14f
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(if (prefix.isNotEmpty()) 10 else 0, 0, 8, 0)
+            val brainSize = (28 * density).toInt()
+            val brainCharView = BrainCharacterView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(brainSize, brainSize).apply {
+                    setMargins(if (prefix.isNotEmpty()) (6 * density).toInt() else 0, 0, (8 * density).toInt(), 0)
                 }
                 visibility = if (showBrain) View.VISIBLE else View.GONE
             }
-            root.addView(brainEmojiView)
-            floatingPillBrainEmoji = brainEmojiView
+            val currentTier = when {
+                currentNetBrainFogPercent <= 30 -> 0
+                currentNetBrainFogPercent <= 60 -> 1
+                currentNetBrainFogPercent <= 90 -> 2
+                else -> 3
+            }
+            brainCharView.updateTier(currentTier)
+            root.addView(brainCharView)
+            floatingPillBrainCharacter = brainCharView
 
             val suffixView = TextView(this).apply {
                 text = suffix
                 setTextColor(accentColor)
-                textSize = 13f
+                textSize = 13.5f
                 typeface = android.graphics.Typeface.DEFAULT_BOLD
                 visibility = if (showBrain && suffix.isNotEmpty()) View.VISIBLE else View.GONE
             }
@@ -1212,7 +1218,14 @@ class FocusMonitorService : Service() {
                 floatingPillPrefixText?.setTextColor(accentColor)
                 floatingPillPrefixText?.visibility = if (prefix.isNotEmpty()) View.VISIBLE else View.GONE
 
-                floatingPillBrainEmoji?.visibility = if (showBrain) View.VISIBLE else View.GONE
+                val currentTier = when {
+                    currentNetBrainFogPercent <= 30 -> 0
+                    currentNetBrainFogPercent <= 60 -> 1
+                    currentNetBrainFogPercent <= 90 -> 2
+                    else -> 3
+                }
+                floatingPillBrainCharacter?.visibility = if (showBrain) View.VISIBLE else View.GONE
+                floatingPillBrainCharacter?.updateTier(currentTier)
 
                 floatingPillSuffixText?.visibility = if (showBrain && suffix.isNotEmpty()) View.VISIBLE else View.GONE
                 floatingPillSuffixText?.text = suffix
@@ -1221,10 +1234,11 @@ class FocusMonitorService : Service() {
                 // Update background and border color
                 val isDark = PassStorage.isDarkTheme(this@FocusMonitorService)
                 val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
+                val density = resources.displayMetrics.density
                 val shape = GradientDrawable().apply {
                     setColor(pillBgColor)
                     setStroke(2, accentColor)
-                    cornerRadius = 40f
+                    cornerRadius = 40f * density
                 }
                 floatingPillView?.background = shape
                 floatingPillView?.visibility = View.VISIBLE
@@ -1266,9 +1280,10 @@ class FocusMonitorService : Service() {
                 } catch (e: Exception) {
                     // ignore
                 }
+                floatingPillBrainCharacter?.stopAnimation()
                 floatingPillView = null
                 floatingPillPrefixText = null
-                floatingPillBrainEmoji = null
+                floatingPillBrainCharacter = null
                 floatingPillSuffixText = null
             }
         }
