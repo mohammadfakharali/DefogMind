@@ -373,7 +373,21 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
     return Scaffold(
       backgroundColor: AppTheme.background(context),
       appBar: AppBar(
-        title: Text(_isKidsModeActive ? '🧸 DefogMind Kids Mode' : 'DefogMind'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!_isKidsModeActive) ...[
+              Image.asset(
+                'assets/images/app_logo.png',
+                width: 28,
+                height: 28,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 8),
+            ],
+            Text(_isKidsModeActive ? '🧸 DefogMind Kids Mode' : 'DefogMind'),
+          ],
+        ),
         actions: [
           if (!_isKidsModeActive)
             IconButton(

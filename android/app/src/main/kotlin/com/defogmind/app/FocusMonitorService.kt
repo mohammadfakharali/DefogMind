@@ -14,6 +14,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
@@ -510,14 +511,25 @@ class FocusMonitorService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        return NotificationCompat.Builder(this, CHANNEL_ID)
+        val largeIcon = try {
+            BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_splash)
+        } catch (_: Exception) {
+            null
+        }
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("DefogMind Focus Monitor: Active")
             .setContentText(statusText)
             .setSmallIcon(R.drawable.ic_brain)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(pendingIntent)
-            .build()
+
+        if (largeIcon != null) {
+            builder.setLargeIcon(largeIcon)
+        }
+
+        return builder.build()
     }
 
     private fun startForegroundServiceCompat() {
