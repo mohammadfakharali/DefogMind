@@ -1317,6 +1317,13 @@ class FocusMonitorService : Service() {
         }
     }
 
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        try {
+            DefogMindWidgetUpdater.updateWidgets(this)
+        } catch (_: Exception) {}
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         stopMonitoring()

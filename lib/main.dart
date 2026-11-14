@@ -33,6 +33,9 @@ Future<void> updateAppThemeMode(ThemeMode mode) async {
       ? 'light'
       : (mode == ThemeMode.dark ? 'dark' : 'system');
   await prefs.setString('app_theme_mode', modeStr);
+  try {
+    await UsageService.updateHomeScreenWidgets();
+  } catch (_) {}
 }
 
 class DefogMindRootApp extends StatefulWidget {

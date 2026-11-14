@@ -39,11 +39,19 @@ object DefogMindWidgetUpdater {
                 else -> 3
             }
 
+            // Respect App Theme Mode: System, Dark, or Light
+            val isDark = PassStorage.isDarkTheme(context)
+            val bgDrawable = if (isDark) R.drawable.widget_bg_card else R.drawable.widget_bg_card_light
+            val pillDrawable = if (isDark) R.drawable.widget_pill_bg else R.drawable.widget_pill_bg_light
+            val brandColorHex = if (isDark) "#94A3B8" else "#64748B"
+            val titleColorHex = if (isDark) "#FFFFFF" else "#0F172A"
+            val subColorHex = if (isDark) "#94A3B8" else "#64748B"
+
             val (title, colorHex) = when (tier) {
-                0 -> Pair("Fresh Mind 😊", "#10B981")
-                1 -> Pair("Tired Mind 😐", "#F59E0B")
-                2 -> Pair("Heavy Mind 😵‍💫", "#F97316")
-                else -> Pair("Overloaded Mind 🤯", "#F43F5E")
+                0 -> Pair("Fresh Mind 😊", if (isDark) "#10B981" else "#059669")
+                1 -> Pair("Tired Mind 😐", if (isDark) "#F59E0B" else "#D97706")
+                2 -> Pair("Heavy Mind 😵‍💫", if (isDark) "#F97316" else "#EA580C")
+                else -> Pair("Overloaded Mind 🤯", if (isDark) "#F43F5E" else "#E11D48")
             }
 
             val subText = if (limitMins > 0) {
@@ -64,14 +72,20 @@ object DefogMindWidgetUpdater {
             )
 
             // Render live mascot bitmap
-            val mascotBitmap = renderMascotBitmap(tier)
+            val mascotBitmap = renderMascotBitmap(tier, isDark)
 
             for (appWidgetId in appWidgetIds) {
                 val views = RemoteViews(context.packageName, R.layout.widget_compact).apply {
+                    setInt(R.id.widget_compact_root, "setBackgroundResource", bgDrawable)
+                    setInt(R.id.widget_compact_badge, "setBackgroundResource", pillDrawable)
+                    setTextViewText(R.id.widget_compact_app_name, "DEFOGMIND")
+                    setTextColor(R.id.widget_compact_app_name, Color.parseColor(brandColorHex))
                     setTextViewText(R.id.widget_compact_badge, "$fog% Fog")
                     setTextColor(R.id.widget_compact_badge, Color.parseColor(colorHex))
                     setTextViewText(R.id.widget_compact_title, title)
+                    setTextColor(R.id.widget_compact_title, Color.parseColor(titleColorHex))
                     setTextViewText(R.id.widget_compact_sub, subText)
+                    setTextColor(R.id.widget_compact_sub, Color.parseColor(subColorHex))
                     if (mascotBitmap != null) {
                         setImageViewBitmap(R.id.widget_compact_character, mascotBitmap)
                     }
@@ -84,7 +98,7 @@ object DefogMindWidgetUpdater {
         }
     }
 
-    private fun renderMascotBitmap(tier: Int): Bitmap? {
+    private fun renderMascotBitmap(tier: Int, isDark: Boolean): Bitmap? {
         try {
             val size = 260
             val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -104,10 +118,10 @@ object DefogMindWidgetUpdater {
             val legTopY = cy + ry * 0.78f
 
             val auraColor = when (tier) {
-                0 -> "#10B981"
-                1 -> "#F59E0B"
-                2 -> "#F97316"
-                else -> "#F43F5E"
+                0 -> if (isDark) "#10B981" else "#059669"
+                1 -> if (isDark) "#F59E0B" else "#D97706"
+                2 -> if (isDark) "#F97316" else "#EA580C"
+                else -> if (isDark) "#F43F5E" else "#E11D48"
             }
 
             // 1. Ambient Aura
@@ -118,7 +132,7 @@ object DefogMindWidgetUpdater {
                     floatArrayOf(0f, 0.45f, 1f),
                     Shader.TileMode.CLAMP
                 )
-                alpha = 60
+                alpha = if (isDark) 60 else 38
             }
             canvas.drawCircle(cx, cy, rx * 1.35f, auraPaint)
 
