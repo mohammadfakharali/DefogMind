@@ -30,6 +30,7 @@ object DefogMindWidgetUpdater {
             } else {
                 prefs.getInt("cached_today_social_minutes", 0)
             }
+            val focusMode = prefs.getInt(FocusMonitorService.KEY_FOCUS_MODE, 1)
             val limitMins = prefs.getInt("daily_limit_minutes", 60)
 
             val tier = when {
@@ -53,7 +54,7 @@ object DefogMindWidgetUpdater {
                 else -> Pair("Overloaded Mind 🤯", if (isDark) "#EF4444" else "#E11D48")
             }
 
-            val subText = if (limitMins > 0) {
+            val subText = if (focusMode == 1 && limitMins > 0) {
                 "${totalMins}m / ${limitMins}m used"
             } else {
                 "${totalMins}m used today"

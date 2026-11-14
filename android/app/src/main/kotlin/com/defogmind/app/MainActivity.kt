@@ -133,6 +133,9 @@ class MainActivity : FlutterActivity() {
                             }
                             startService(stopIntent)
                         }
+                        try {
+                            DefogMindWidgetUpdater.updateWidgets(this)
+                        } catch (_: Exception) {}
                         result.success(true)
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -188,6 +191,9 @@ class MainActivity : FlutterActivity() {
                                 startService(serviceIntent)
                             }
                         }
+                        try {
+                            DefogMindWidgetUpdater.updateWidgets(this)
+                        } catch (_: Exception) {}
                         result.success(true)
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -331,6 +337,9 @@ class MainActivity : FlutterActivity() {
                         } else {
                             startService(serviceIntent)
                         }
+                        try {
+                            DefogMindWidgetUpdater.updateWidgets(this)
+                        } catch (_: Exception) {}
                         result.success(true)
                     } catch (e: Exception) {
                         e.printStackTrace()
