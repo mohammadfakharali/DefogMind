@@ -44,14 +44,13 @@ object DefogMindWidgetUpdater {
             val bgDrawable = if (isDark) R.drawable.widget_bg_card else R.drawable.widget_bg_card_light
             val pillDrawable = if (isDark) R.drawable.widget_pill_bg else R.drawable.widget_pill_bg_light
             val brandColorHex = if (isDark) "#94A3B8" else "#64748B"
-            val titleColorHex = if (isDark) "#FFFFFF" else "#0F172A"
             val subColorHex = if (isDark) "#94A3B8" else "#64748B"
 
             val (title, colorHex) = when (tier) {
                 0 -> Pair("Fresh Mind 😊", if (isDark) "#10B981" else "#059669")
                 1 -> Pair("Tired Mind 😐", if (isDark) "#F59E0B" else "#D97706")
-                2 -> Pair("Heavy Mind 😵‍💫", if (isDark) "#F97316" else "#EA580C")
-                else -> Pair("Overloaded Mind 🤯", if (isDark) "#F43F5E" else "#E11D48")
+                2 -> Pair("Heavy Mind 😵‍💫", if (isDark) "#FB923C" else "#EA580C")
+                else -> Pair("Overloaded Mind 🤯", if (isDark) "#EF4444" else "#E11D48")
             }
 
             val subText = if (limitMins > 0) {
@@ -83,7 +82,7 @@ object DefogMindWidgetUpdater {
                     setTextViewText(R.id.widget_compact_badge, "$fog% Fog")
                     setTextColor(R.id.widget_compact_badge, Color.parseColor(colorHex))
                     setTextViewText(R.id.widget_compact_title, title)
-                    setTextColor(R.id.widget_compact_title, Color.parseColor(titleColorHex))
+                    setTextColor(R.id.widget_compact_title, Color.parseColor(colorHex))
                     setTextViewText(R.id.widget_compact_sub, subText)
                     setTextColor(R.id.widget_compact_sub, Color.parseColor(subColorHex))
                     if (mascotBitmap != null) {
