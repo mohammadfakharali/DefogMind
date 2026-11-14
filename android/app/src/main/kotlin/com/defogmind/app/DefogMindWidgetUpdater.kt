@@ -48,10 +48,10 @@ object DefogMindWidgetUpdater {
             val subColorHex = if (isDark) "#94A3B8" else "#64748B"
 
             val (title, colorHex) = when (tier) {
-                0 -> Pair("Fresh Mind 😊", if (isDark) "#10B981" else "#059669")
-                1 -> Pair("Tired Mind 😐", if (isDark) "#F59E0B" else "#D97706")
-                2 -> Pair("Heavy Mind 😵‍💫", if (isDark) "#FB923C" else "#EA580C")
-                else -> Pair("Overloaded Mind 🤯", if (isDark) "#EF4444" else "#E11D48")
+                0 -> Pair("Fresh Mind", if (isDark) "#10B981" else "#059669")
+                1 -> Pair("Tired Mind", if (isDark) "#F59E0B" else "#D97706")
+                2 -> Pair("Heavy Mind", if (isDark) "#FB923C" else "#EA580C")
+                else -> Pair("Overloaded Mind", if (isDark) "#EF4444" else "#E11D48")
             }
 
             val subText = if (focusMode == 1 && limitMins > 0) {
