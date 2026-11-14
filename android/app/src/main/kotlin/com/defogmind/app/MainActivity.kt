@@ -373,6 +373,41 @@ class MainActivity : FlutterActivity() {
                         "kidsUsageMillis" to kidsUsageMap
                     ))
                 }
+                "isPinWidgetSupported" -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val appWidgetManager = getSystemService(android.appwidget.AppWidgetManager::class.java)
+                        result.success(appWidgetManager?.isRequestPinAppWidgetSupported ?: false)
+                    } else {
+                        result.success(false)
+                    }
+                }
+                "requestPinWidget" -> {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val appWidgetManager = getSystemService(android.appwidget.AppWidgetManager::class.java)
+                            if (appWidgetManager?.isRequestPinAppWidgetSupported == true) {
+                                val provider = android.content.ComponentName(this, DefogMindWidgetProvider::class.java)
+                                appWidgetManager.requestPinAppWidget(provider, null, null)
+                                result.success(true)
+                            } else {
+                                result.success(false)
+                            }
+                        } else {
+                            result.success(false)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        result.success(false)
+                    }
+                }
+                "updateHomeScreenWidgets" -> {
+                    try {
+                        DefogMindWidgetUpdater.updateWidgets(this)
+                        result.success(true)
+                    } catch (e: Exception) {
+                        result.success(false)
+                    }
+                }
                 else -> {
                     result.notImplemented()
                 }

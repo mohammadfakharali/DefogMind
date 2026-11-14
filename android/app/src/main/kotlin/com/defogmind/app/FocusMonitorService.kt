@@ -212,6 +212,7 @@ class FocusMonitorService : Service() {
     private var bypassActiveRemainingSeconds = 0
     private var bypassWallClockExpiryMillis = 0L
     private val ABSOLUTE_WALL_CLOCK_CEILING_MS = 15 * 60 * 1000L // 15 mins ceiling
+    private var lastWidgetUpdateTimestampMs: Long = 0L
 
     // Movable Floating HUD / Pill Overlay
     private var floatingPillView: View? = null
@@ -574,6 +575,12 @@ class FocusMonitorService : Service() {
                 if (keepAliveTick >= 2) {
                     keepAliveTick = 0
                     scheduleServiceRestart(4000L)
+                }
+
+                val now = System.currentTimeMillis()
+                if (now - lastWidgetUpdateTimestampMs >= 15000L) {
+                    lastWidgetUpdateTimestampMs = now
+                    DefogMindWidgetUpdater.updateWidgets(this@FocusMonitorService)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

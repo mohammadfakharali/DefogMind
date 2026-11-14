@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_compact_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_card"
+    android:paddingStart="10dp"
+    android:paddingTop="9dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="9dp">
+
+    <!-- Top Header Bar -->
+    <RelativeLayout
+        android:id="@+id/widget_compact_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/widget_compact_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:letterSpacing="0.08"
+            android:text="DEFOGMIND"
+            android:textColor="#94A3B8"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_compact_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/widget_pill_bg"
+            android:paddingStart="7dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="2dp"
+            android:text="18% Fog"
+            android:textColor="#10B981"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Bottom Footer Status -->
+    <LinearLayout
+        android:id="@+id/widget_compact_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_compact_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Fresh Mind 😊"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_compact_sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="32m / 60m used"
+            android:textColor="#94A3B8"
+            android:textSize="9.5sp" />
+    </LinearLayout>
+
+    <!-- Big Center Mascot Character: Expands to cleanly fill the space -->
+    <ImageView
+        android:id="@+id/widget_compact_character"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/widget_compact_footer"
+        android:layout_below="@id/widget_compact_header"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:contentDescription="Brain Character Status"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_splash" />
+</RelativeLayout>

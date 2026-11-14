@@ -443,6 +443,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     await UsageService.openAutoStartSettings();
                   },
                 ),
+                const SizedBox(height: 24),
+
+                // Home Screen Widget
+                _buildSectionHeader('HOME SCREEN WIDGET'),
+                const SizedBox(height: 8),
+                _buildWidgetPinTile(),
                 const SizedBox(height: 32),
 
                 // Medical Disclaimer
@@ -944,6 +950,95 @@ class _SettingsScreenState extends State<SettingsScreen> {
               fontSize: 13,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWidgetPinTile() {
+    return GestureDetector(
+      onTap: () async {
+        final supported = await UsageService.isPinWidgetSupported();
+        if (!supported) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Long-press on your home screen and select DefogMind from Widgets to add it.'),
+              ),
+            );
+          }
+          return;
+        }
+        final pinned = await UsageService.requestPinWidget();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(pinned
+                  ? 'Request sent to add 2×2 DefogMind widget to your Home Screen!'
+                  : 'Long-press on home screen to place the DefogMind widget.'),
+            ),
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceCard(context),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppTheme.mint.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.mint.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.widgets_outlined, color: AppTheme.mint, size: 22),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Add 2×2 Brain Clarity Widget',
+                    style: TextStyle(
+                      color: AppTheme.textPrimary(context),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Glance at your live brain status & screen time without opening the app',
+                    style: TextStyle(
+                      color: AppTheme.textSecondary(context),
+                      fontSize: 11.5,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppTheme.mint,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Text(
+                'Pin 📌',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

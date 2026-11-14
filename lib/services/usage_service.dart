@@ -224,4 +224,28 @@ class UsageService {
       };
     }
   }
+
+  static Future<bool> isPinWidgetSupported() async {
+    try {
+      final supported = await _channel.invokeMethod<bool>('isPinWidgetSupported');
+      return supported ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<bool> requestPinWidget() async {
+    try {
+      final pinned = await _channel.invokeMethod<bool>('requestPinWidget');
+      return pinned ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static Future<void> updateHomeScreenWidgets() async {
+    try {
+      await _channel.invokeMethod('updateHomeScreenWidgets');
+    } catch (_) {}
+  }
 }

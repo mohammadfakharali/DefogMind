@@ -313,9 +313,107 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
     }
 
     if (!mounted) return;
+
+    try {
+      final isWidgetSupported = await UsageService.isPinWidgetSupported();
+      if (isWidgetSupported && mounted) {
+        final prefs = await SharedPreferences.getInstance();
+        final shouldPrompt = prefs.getBool('widget_prompt_shown') ?? false;
+        if (!shouldPrompt) {
+          await prefs.setBool('widget_prompt_shown', true);
+          if (mounted) {
+            await _showAddWidgetSheet(context);
+          }
+        }
+      }
+    } catch (_) {}
+
+    if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const HomeDashboard()),
       (route) => false,
+    );
+  }
+
+  Future<void> _showAddWidgetSheet(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.surfaceCard(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppTheme.textMuted(ctx).withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Image.asset(
+                'assets/images/app_logo.png',
+                width: 72,
+                height: 72,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Keep an eye on your focus',
+                style: TextStyle(
+                  color: AppTheme.textPrimary(ctx),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Add the 2×2 Brain Clarity Widget to your Home Screen to monitor your brain fog with one glance.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: AppTheme.textSecondary(ctx),
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.mint,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(ctx).pop();
+                    await UsageService.requestPinWidget();
+                  },
+                  child: const Text(
+                    '📌 Add Widget to Home Screen',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text(
+                  'Maybe later',
+                  style: TextStyle(color: AppTheme.textMuted(ctx), fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
