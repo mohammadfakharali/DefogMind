@@ -225,8 +225,8 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
                   ),
                   const SizedBox(height: 12),
 
-                  // 3-Step Visual Guide
-                  _buildThreeStepsGuide(context),
+                  // Top-to-Bottom Vertical 3-Step Guide
+                  _buildVerticalStepsGuide(context),
                   const SizedBox(height: 12),
 
                   // Privacy / Disclosure Guarantee Note
@@ -321,95 +321,93 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
     );
   }
 
-  Widget _buildThreeStepsGuide(BuildContext context) {
-    final isDark = AppTheme.isDark(context);
-    return Row(
+  Widget _buildVerticalStepsGuide(BuildContext context) {
+    return Column(
       children: [
-        _buildStepItem(context, '1', 'Find DefogMind', isHighlight: false),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Icon(
-            Icons.chevron_right_rounded,
-            size: 16,
-            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-          ),
+        _buildVerticalStepRow(
+          context,
+          stepNum: '1',
+          text: 'Find DefogMind in the apps list',
+          isHighlight: false,
         ),
-        _buildStepItem(context, '2', 'Tap DefogMind', isHighlight: false),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Icon(
-            Icons.chevron_right_rounded,
-            size: 16,
-            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-          ),
+        const SizedBox(height: 6),
+        _buildVerticalStepRow(
+          context,
+          stepNum: '2',
+          text: 'Tap on DefogMind to open settings',
+          isHighlight: false,
         ),
-        _buildStepItem(context, '3', 'Turn ON', isHighlight: true),
+        const SizedBox(height: 6),
+        _buildVerticalStepRow(
+          context,
+          stepNum: '3',
+          text: 'Turn the toggle switch ON',
+          isHighlight: true,
+        ),
       ],
     );
   }
 
-  Widget _buildStepItem(
-    BuildContext context,
-    String stepNum,
-    String label, {
+  Widget _buildVerticalStepRow(
+    BuildContext context, {
+    required String stepNum,
+    required String text,
     required bool isHighlight,
   }) {
     final isDark = AppTheme.isDark(context);
     final borderColor = isHighlight
-        ? AppTheme.mint.withValues(alpha: 0.5)
+        ? AppTheme.mint.withValues(alpha: 0.45)
         : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0));
     final bgColor = isHighlight
         ? AppTheme.mint.withValues(alpha: isDark ? 0.12 : 0.08)
-        : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9));
+        : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC));
     final textColor = isHighlight
-        ? AppTheme.mint
+        ? (isDark ? AppTheme.mint : const Color(0xFF059669))
         : AppTheme.textPrimary(context);
 
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: borderColor, width: 1),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 17,
-              height: 17,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isHighlight
-                    ? AppTheme.mint
-                    : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                stepNum,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  color: isHighlight ? Colors.black : (isDark ? Colors.white : const Color(0xFF0F172A)),
-                ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: borderColor, width: 1),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isHighlight
+                  ? AppTheme.mint
+                  : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              stepNum,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: isHighlight ? Colors.black : (isDark ? Colors.white : const Color(0xFF0F172A)),
               ),
             ),
-            const SizedBox(width: 5),
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w700,
-                  color: textColor,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isHighlight ? FontWeight.w700 : FontWeight.w600,
+                color: textColor,
+                height: 1.3,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

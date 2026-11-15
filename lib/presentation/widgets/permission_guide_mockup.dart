@@ -40,6 +40,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
     final isDark = AppTheme.isDark(context);
     final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
     final innerBg = isDark ? const Color(0xFF0B0F17) : const Color(0xFFF1F5F9);
+    final textPrimary = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final textMuted = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return AnimatedBuilder(
@@ -60,8 +61,8 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
         if (progress < 0.20) {
           final t = progress / 0.20;
           pointerOpacity = Curves.easeOut.transform(t);
-          pointerXOffset = (1.0 - t) * 16.0;
-          pointerYOffset = (1.0 - t) * 16.0;
+          pointerXOffset = (1.0 - t) * 14.0;
+          pointerYOffset = (1.0 - t) * 14.0;
         } else if (progress < 0.35) {
           pointerOpacity = 1.0;
           final t = (progress - 0.20) / 0.15;
@@ -103,7 +104,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: borderColor, width: 1.2),
           ),
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -126,29 +127,29 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 5),
                   Divider(height: 1, color: borderColor.withValues(alpha: 0.5)),
-                  const SizedBox(height: 6),
-
-                  // App Item 1: Chrome (dimmed)
-                  _buildMockRow(
-                    icon: Icons.language,
-                    iconBg: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-                    iconColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                    appName: 'Chrome',
-                    status: 'Not allowed',
-                    textMuted: textMuted,
-                    isDimmed: true,
-                  ),
                   const SizedBox(height: 4),
 
-                  // App Item 2: DefogMind (Target!)
+                  // App 1: Chrome (Clear realistic app item)
+                  _buildMockRow(
+                    icon: Icons.language,
+                    iconBg: const Color(0xFF2563EB),
+                    iconColor: Colors.white,
+                    appName: 'Chrome',
+                    status: 'Not allowed',
+                    textPrimary: textPrimary,
+                    textMuted: textMuted,
+                  ),
+                  const SizedBox(height: 3),
+
+                  // App 2: DefogMind (Target app row!)
                   Container(
                     decoration: BoxDecoration(
                       color: isTargetHighlighted
                           ? AppTheme.mint.withValues(alpha: isDark ? 0.14 : 0.10)
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(9),
                       border: Border.all(
                         color: isTargetHighlighted
                             ? AppTheme.mint.withValues(alpha: 0.45)
@@ -156,7 +157,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                         width: 1,
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3.5),
                     child: Row(
                       children: [
                         // App Logo Icon
@@ -193,7 +194,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                                 style: TextStyle(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w800,
-                                  color: AppTheme.textPrimary(context),
+                                  color: textPrimary,
                                 ),
                               ),
                               Text(
@@ -212,8 +213,8 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
 
                         // Animated Toggle Switch
                         Container(
-                          width: 36,
-                          height: 20,
+                          width: 34,
+                          height: 19,
                           decoration: BoxDecoration(
                             color: switchColor,
                             borderRadius: BorderRadius.circular(12),
@@ -221,10 +222,10 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                           padding: const EdgeInsets.all(2),
                           alignment: Alignment.centerLeft,
                           child: Transform.translate(
-                            offset: Offset(switchProgress * 16.0, 0),
+                            offset: Offset(switchProgress * 15.0, 0),
                             child: Container(
-                              width: 16,
-                              height: 16,
+                              width: 15,
+                              height: 15,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.white,
@@ -239,7 +240,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                               child: switchProgress > 0.7
                                   ? const Icon(
                                       Icons.check,
-                                      size: 11,
+                                      size: 10,
                                       color: AppTheme.mint,
                                     )
                                   : null,
@@ -249,39 +250,51 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                       ],
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
 
-                  // App Item 3: Messages (dimmed)
+                  // App 3: Messages (Clear realistic app item)
                   _buildMockRow(
                     icon: Icons.chat_bubble_outline_rounded,
-                    iconBg: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-                    iconColor: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                    appName: widget.isUsageAccess ? 'Messages' : 'Camera',
+                    iconBg: const Color(0xFF0D9488),
+                    iconColor: Colors.white,
+                    appName: 'Messages',
                     status: 'Not allowed',
+                    textPrimary: textPrimary,
                     textMuted: textMuted,
-                    isDimmed: true,
+                  ),
+                  const SizedBox(height: 3),
+
+                  // App 4: YouTube (4th app to make it look like a complete Android list)
+                  _buildMockRow(
+                    icon: Icons.play_arrow_rounded,
+                    iconBg: const Color(0xFFDC2626),
+                    iconColor: Colors.white,
+                    appName: widget.isUsageAccess ? 'YouTube' : 'Camera',
+                    status: 'Not allowed',
+                    textPrimary: textPrimary,
+                    textMuted: textMuted,
                   ),
                 ],
               ),
 
-              // Animated Touch Pointer (Finger Indicator)
+              // Animated Touch Pointer (Finger Indicator positioned over DefogMind switch)
               if (pointerOpacity > 0.01)
                 Positioned(
                   right: 4 + pointerXOffset,
-                  top: 58 + pointerYOffset,
+                  top: 60 + pointerYOffset,
                   child: Opacity(
                     opacity: pointerOpacity,
                     child: Transform.scale(
                       scale: pointerScale,
                       child: Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(5.5),
                         decoration: BoxDecoration(
                           color: AppTheme.mint.withValues(alpha: 0.28),
                           shape: BoxShape.circle,
                           border: Border.all(color: AppTheme.mint, width: 1.5),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.mint.withValues(alpha: 0.3),
+                              color: AppTheme.mint.withValues(alpha: 0.35),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -289,7 +302,7 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
                         ),
                         child: const Icon(
                           Icons.touch_app_rounded,
-                          size: 16,
+                          size: 15,
                           color: Colors.white,
                         ),
                       ),
@@ -309,37 +322,42 @@ class _PermissionGuideMockupState extends State<PermissionGuideMockup>
     required Color iconColor,
     required String appName,
     required String status,
+    required Color textPrimary,
     required Color textMuted,
-    required bool isDimmed,
   }) {
-    return Opacity(
-      opacity: isDimmed ? 0.45 : 1.0,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-        child: Row(
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(6),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(icon, size: 14, color: iconColor),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              appName,
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: textPrimary,
               ),
-              child: Icon(icon, size: 14, color: iconColor),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                appName,
-                style: TextStyle(fontSize: 11.5, color: textMuted),
-              ),
+          ),
+          Text(
+            status,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w500,
+              color: textMuted,
             ),
-            Text(
-              status,
-              style: TextStyle(fontSize: 9.5, color: textMuted),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
