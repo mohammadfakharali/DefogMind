@@ -7,6 +7,7 @@ import '../../core/constants/social_apps.dart';
 import '../../main.dart';
 import 'home_dashboard.dart';
 import 'app_selection_screen.dart';
+import '../widgets/permission_guide_mockup.dart';
 
 class OnboardingDisclosureScreen extends StatefulWidget {
   const OnboardingDisclosureScreen({super.key});
@@ -130,94 +131,189 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
 
   void _showProminentDisclosureModal({
     required String title,
+    required String subtitle,
+    required String screenTitle,
+    required bool isUsageAccess,
     required String message,
     required VoidCallback onGranted,
   }) {
     showModalBottomSheet(
       context: context,
-      isDismissible: false,
-      enableDrag: false,
+      isDismissible: true,
+      enableDrag: true,
       isScrollControlled: true,
       backgroundColor: AppTheme.surfaceCard(context),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (ctx) {
+        final isDark = AppTheme.isDark(ctx);
         return SafeArea(
           child: Padding(
             padding: EdgeInsets.only(
-              left: 22,
-              right: 22,
-              top: 20,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+              left: 20,
+              right: 20,
+              top: 12,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Center drag handle
+                  Center(
+                    child: Container(
+                      width: 38,
+                      height: 4,
                       decoration: BoxDecoration(
-                        color: AppTheme.mint.withValues(alpha: 0.12),
-                        shape: BoxShape.circle,
+                        color: isDark ? const Color(0xFF475569) : const Color(0xFFCBD5E1),
+                        borderRadius: BorderRadius.circular(2),
                       ),
-                      child: const Icon(Icons.privacy_tip_outlined, color: AppTheme.mint, size: 20),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Header with Icon & Subtitle
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(9),
+                        decoration: BoxDecoration(
+                          color: AppTheme.mint.withValues(alpha: 0.14),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isUsageAccess ? Icons.query_stats : Icons.layers_outlined,
+                          color: AppTheme.mint,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                color: AppTheme.textPrimary(context),
+                                fontSize: 16.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                color: AppTheme.textSecondary(context),
+                                fontSize: 11.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Animated Phone Mockup
+                  PermissionGuideMockup(
+                    screenTitle: screenTitle,
+                    isUsageAccess: isUsageAccess,
+                  ),
+                  const SizedBox(height: 12),
+
+                  // 3-Step Visual Guide
+                  _buildThreeStepsGuide(context),
+                  const SizedBox(height: 12),
+
+                  // Privacy / Disclosure Guarantee Note
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.background(context),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppTheme.cardBorder(context),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.verified_user_outlined,
+                          color: AppTheme.mint,
+                          size: 17,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            message,
+                            style: TextStyle(
+                              color: AppTheme.textSecondary(context),
+                              fontSize: 11.5,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Primary Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.mint,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        onGranted();
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Open Settings & Allow',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward_rounded, size: 18),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+
+                  // Cancel / Maybe later button
+                  Center(
+                    child: TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
                       child: Text(
-                        title,
+                        'Maybe later',
                         style: TextStyle(
-                          color: AppTheme.textPrimary(context),
-                          fontSize: 16.5,
-                          fontWeight: FontWeight.w700,
+                          color: AppTheme.textMuted(context),
+                          fontSize: 12.5,
                         ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppTheme.background(context),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.cardBorder(context), width: 1),
                   ),
-                  child: Text(
-                    message,
-                    style: TextStyle(
-                      color: AppTheme.textSecondary(context),
-                      fontSize: 12.5,
-                      height: 1.45,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 46,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.mint,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                      onGranted();
-                    },
-                    child: const Text(
-                      'I Understand & Allow',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -225,11 +321,107 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
     );
   }
 
+  Widget _buildThreeStepsGuide(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+    return Row(
+      children: [
+        _buildStepItem(context, '1', 'Find DefogMind', isHighlight: false),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Icon(
+            Icons.chevron_right_rounded,
+            size: 16,
+            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+          ),
+        ),
+        _buildStepItem(context, '2', 'Tap DefogMind', isHighlight: false),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Icon(
+            Icons.chevron_right_rounded,
+            size: 16,
+            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+          ),
+        ),
+        _buildStepItem(context, '3', 'Turn ON', isHighlight: true),
+      ],
+    );
+  }
+
+  Widget _buildStepItem(
+    BuildContext context,
+    String stepNum,
+    String label, {
+    required bool isHighlight,
+  }) {
+    final isDark = AppTheme.isDark(context);
+    final borderColor = isHighlight
+        ? AppTheme.mint.withValues(alpha: 0.5)
+        : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0));
+    final bgColor = isHighlight
+        ? AppTheme.mint.withValues(alpha: isDark ? 0.12 : 0.08)
+        : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9));
+    final textColor = isHighlight
+        ? AppTheme.mint
+        : AppTheme.textPrimary(context);
+
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 17,
+              height: 17,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isHighlight
+                    ? AppTheme.mint
+                    : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                stepNum,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: isHighlight ? Colors.black : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _handleGrantUsage() async {
     _showProminentDisclosureModal(
       title: 'Usage Access Permission',
+      subtitle: 'Required to read foreground app duration',
+      screenTitle: 'Usage access',
+      isUsageAccess: true,
       message:
-          'DefogMind uses Usage Access solely to detect when a selected app is open and track its screen time on your phone. All data stays 100% on your device and is never shared.',
+          '100% On-Device Privacy: DefogMind uses Usage Access solely to detect when a selected app is open and measure its screen time. All data stays strictly on your phone—never uploaded or shared.',
       onGranted: () async {
         await UsageService.requestUsagePermission();
       },
@@ -239,8 +431,11 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
   Future<void> _handleGrantOverlay() async {
     _showProminentDisclosureModal(
       title: 'Display Over Apps Permission',
+      subtitle: 'Shows your focus shield & Brain Clarity meter',
+      screenTitle: 'Display over other apps',
+      isUsageAccess: false,
       message:
-          'DefogMind uses Display Over Other Apps solely to show your focus shield and Brain Fog indicator over monitored apps. No screen content is ever read or collected.',
+          '100% On-Device Privacy: DefogMind uses Display Over Apps solely to show your focus shield and floating Brain Clarity indicator over monitored apps. No screen contents or personal data are ever captured.',
       onGranted: () async {
         await UsageService.requestOverlayPermission();
       },
