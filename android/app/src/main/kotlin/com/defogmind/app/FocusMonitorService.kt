@@ -17,7 +17,12 @@ import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -241,6 +246,7 @@ class FocusMonitorService : Service() {
     private var centralAwarenessFog: Double = 0.0
     private var currentNetBrainFogPercent = 0
     private var lastDetoxMilestoneShown = 0
+    private var lastSocialMinuteShown = -1
     private var detoxPeekExpiryMs = 0L
     private var isFadingOutPill = false
     private var lastFullUsageQueryMs = 0L
@@ -728,6 +734,7 @@ class FocusMonitorService : Service() {
                 currentSessionStartMs = now
                 lastSocialExitTimestampMs = 0L
                 lastDetoxMilestoneShown = -1
+                lastSocialMinuteShown = -1
             }
 
             // Increment active session duration by 1 second (1000ms)
@@ -813,16 +820,34 @@ class FocusMonitorService : Service() {
                         hideFloatingPill()
                         triggerBlockingOverlay(lastForegroundPackage)
                     } else {
-                        // Show 4-second fade-in/fade-out reminder immediately on entering app AND on every 1% change!
-                        if (currentNetBrainFogPercent != lastDetoxMilestoneShown) {
+                        // Show 4-second fade-in/fade-out reminder immediately on entering app AND on every 1% change or minute change!
+                        if (currentNetBrainFogPercent != lastDetoxMilestoneShown || todaySocialMinutes != lastSocialMinuteShown) {
                             lastDetoxMilestoneShown = currentNetBrainFogPercent
+                            lastSocialMinuteShown = todaySocialMinutes
                             detoxPeekExpiryMs = now + 4000L // Show for 4 seconds
                         }
 
                         if (now < detoxPeekExpiryMs) {
                             val word = getAwarenessStatusWord(currentNetBrainFogPercent)
                             val statusColor = getAwarenessColor(currentNetBrainFogPercent)
-                            showOrUpdateFloatingPill("", true, "$word • $currentNetBrainFogPercent% Fog", statusColor, animateFadeIn = true)
+                            val isDark = PassStorage.isDarkTheme(this)
+
+                            val remainingMins = (dailyLimitMinutes - todaySocialMinutes).coerceAtLeast(0)
+                            val limitRatio = if (dailyLimitMinutes > 0) todaySocialMinutes.toFloat() / dailyLimitMinutes.toFloat() else 0f
+                            val pillBorderColor = when {
+                                dailyLimitMinutes > 0 && (remainingMins <= 5 || limitRatio >= 0.90f) -> Color.parseColor("#EF4444")
+                                dailyLimitMinutes > 0 && (remainingMins <= 15 || limitRatio >= 0.75f) -> Color.parseColor("#F59E0B")
+                                else -> statusColor
+                            }
+
+                            val limitPillText = buildLimitModePillText(
+                                mindWord = word,
+                                statusColor = statusColor,
+                                usedMins = todaySocialMinutes,
+                                limitMins = dailyLimitMinutes,
+                                isDark = isDark
+                            )
+                            showOrUpdateFloatingPill("", true, limitPillText, pillBorderColor, animateFadeIn = true)
                         } else if (floatingPillView != null) {
                             fadeOutAndHideFloatingPill()
                         }
@@ -1067,10 +1092,73 @@ class FocusMonitorService : Service() {
 
     // --- Movable, Translucent Floating Pill with Tap-to-Open ---
 
+    private fun buildLimitModePillText(
+        mindWord: String,
+        statusColor: Int,
+        usedMins: Int,
+        limitMins: Int,
+        isDark: Boolean
+    ): CharSequence {
+        val builder = SpannableStringBuilder()
+
+        // 1. Mind Status (e.g. "Fresh") keeping identical brain fog logic & color
+        builder.append(mindWord)
+        builder.setSpan(
+            ForegroundColorSpan(statusColor),
+            0, mindWord.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        builder.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0, mindWord.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 2. Muted bullet separator
+        val divStart = builder.length
+        builder.append(" • ")
+        val divColor = if (isDark) Color.parseColor("#64748B") else Color.parseColor("#94A3B8")
+        builder.setSpan(
+            ForegroundColorSpan(divColor),
+            divStart, builder.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 3. Prominent Limit part: "Xm / Ym used"
+        val limitStart = builder.length
+        val limitText = if (limitMins > 0) "${usedMins}m / ${limitMins}m used" else "${usedMins}m used"
+        builder.append(limitText)
+
+        // Prominence & Alert styling:
+        // As the limit runs out (<= 15m remaining / >= 75% used -> amber, <= 5m remaining / >= 90% used -> red)
+        val remainingMins = (limitMins - usedMins).coerceAtLeast(0)
+        val limitRatio = if (limitMins > 0) usedMins.toFloat() / limitMins.toFloat() else 0f
+
+        val limitColor = when {
+            limitMins > 0 && (remainingMins <= 5 || limitRatio >= 0.90f) -> Color.parseColor("#EF4444") // Coral Red
+            limitMins > 0 && (remainingMins <= 15 || limitRatio >= 0.75f) -> Color.parseColor("#F59E0B") // Warning Amber
+            isDark -> Color.parseColor("#FFFFFF") // Crisp Bold White on Dark
+            else -> Color.parseColor("#0F172A") // Deep Bold Charcoal on Light
+        }
+
+        builder.setSpan(
+            ForegroundColorSpan(limitColor),
+            limitStart, builder.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        builder.setSpan(
+            StyleSpan(Typeface.BOLD),
+            limitStart, builder.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return builder
+    }
+
     private fun showOrUpdateFloatingPill(
-        prefix: String,
+        prefix: CharSequence,
         showBrain: Boolean,
-        suffix: String,
+        suffix: CharSequence,
         accentColor: Int,
         animateFadeIn: Boolean = false
     ) {
@@ -1134,9 +1222,11 @@ class FocusMonitorService : Service() {
 
             val suffixView = TextView(this).apply {
                 text = suffix
-                setTextColor(accentColor)
+                if (suffix !is Spanned) {
+                    setTextColor(accentColor)
+                }
                 textSize = 13.5f
-                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                typeface = Typeface.DEFAULT_BOLD
                 visibility = if (showBrain && suffix.isNotEmpty()) View.VISIBLE else View.GONE
             }
             root.addView(suffixView)
@@ -1248,7 +1338,9 @@ class FocusMonitorService : Service() {
 
                 floatingPillSuffixText?.visibility = if (showBrain && suffix.isNotEmpty()) View.VISIBLE else View.GONE
                 floatingPillSuffixText?.text = suffix
-                floatingPillSuffixText?.setTextColor(accentColor)
+                if (suffix !is Spanned) {
+                    floatingPillSuffixText?.setTextColor(accentColor)
+                }
 
                 // Update background and border color
                 val isDark = PassStorage.isDarkTheme(this@FocusMonitorService)
