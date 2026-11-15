@@ -45,7 +45,6 @@ object DefogMindWidgetUpdater {
             val bgDrawable = if (isDark) R.drawable.widget_bg_card else R.drawable.widget_bg_card_light
             val pillDrawable = if (isDark) R.drawable.widget_pill_bg else R.drawable.widget_pill_bg_light
             val brandColorHex = if (isDark) "#94A3B8" else "#64748B"
-            val subColorHex = if (isDark) "#94A3B8" else "#64748B"
 
             val (title, colorHex) = when (tier) {
                 0 -> Pair("Fresh Mind", if (isDark) "#10B981" else "#059669")
@@ -54,10 +53,21 @@ object DefogMindWidgetUpdater {
                 else -> Pair("Overloaded Mind", if (isDark) "#EF4444" else "#E11D48")
             }
 
-            val subText = if (focusMode == 1 && limitMins > 0) {
-                "${totalMins}m / ${limitMins}m used"
+            // Prominent Minutes Used: Bold and shifts color (Amber -> Red) as limit runs out
+            val (subText, subColorHex) = if (focusMode == 1 && limitMins > 0) {
+                val remainingMins = (limitMins - totalMins).coerceAtLeast(0)
+                val limitRatio = totalMins.toFloat() / limitMins.toFloat()
+                val text = "${totalMins}m / ${limitMins}m used"
+                val color = when {
+                    remainingMins <= 5 || limitRatio >= 0.90f -> if (isDark) "#EF4444" else "#DC2626"
+                    remainingMins <= 15 || limitRatio >= 0.75f -> if (isDark) "#F59E0B" else "#D97706"
+                    else -> if (isDark) "#FFFFFF" else "#0F172A"
+                }
+                Pair(text, color)
             } else {
-                "${totalMins}m used today"
+                val text = "${totalMins}m used today"
+                val color = if (isDark) "#E2E8F0" else "#1E293B"
+                Pair(text, color)
             }
 
             // Tap action: opens DefogMind App
