@@ -248,6 +248,8 @@ class FocusMonitorService : Service() {
     private var lastDetoxMilestoneShown = 0
     private var lastSocialMinuteShown = -1
     private var detoxPeekExpiryMs = 0L
+    private var isFirstAppOpenPeek = false
+    private var currentTargetMonitoredPackage = ""
     private var isFadingOutPill = false
     private var lastFullUsageQueryMs = 0L
 
@@ -728,13 +730,14 @@ class FocusMonitorService : Service() {
         todaySocialMinutes = (cachedTodaySocialMs / 60000).toInt()
 
         if (isTargetInForeground) {
-            if (!wasTargetInForeground) {
-                // User just entered a monitored app: trigger immediate 3-second peek in Limit Mode!
+            val isAppOpen = (!wasTargetInForeground) || (lastForegroundPackage != currentTargetMonitoredPackage)
+            if (isAppOpen) {
+                // User entered a monitored app or switched to another monitored app
                 wasTargetInForeground = true
+                currentTargetMonitoredPackage = lastForegroundPackage
                 currentSessionStartMs = now
                 lastSocialExitTimestampMs = 0L
-                lastDetoxMilestoneShown = -1
-                lastSocialMinuteShown = -1
+                isFirstAppOpenPeek = true
             }
 
             // Increment active session duration by 1 second (1000ms)
@@ -761,6 +764,8 @@ class FocusMonitorService : Service() {
                 // User just exited the monitored app: break begins!
                 lastSocialExitTimestampMs = now
                 wasTargetInForeground = false
+                currentTargetMonitoredPackage = ""
+                isFirstAppOpenPeek = false
 
                 prefs.edit()
                     .putLong("KEY_TRACKED_MS", cachedTodaySocialMs)
@@ -817,20 +822,27 @@ class FocusMonitorService : Service() {
                     // Limit Mode: Trigger blocking shield if daily limit is reached
                     if (todaySocialMinutes >= dailyLimitMinutes) {
                         detoxPeekExpiryMs = 0L
+                        isFirstAppOpenPeek = false
+                        currentTargetMonitoredPackage = ""
                         hideFloatingPill()
                         triggerBlockingOverlay(lastForegroundPackage)
                     } else {
                         val remainingMins = (dailyLimitMinutes - todaySocialMinutes).coerceAtLeast(0)
                         val isFinalFiveMinutes = dailyLimitMinutes > 0 && remainingMins <= 5
 
-                        // Show 4-second fade-in/fade-out reminder immediately on entering app AND on every 1% change or minute change!
-                        if (currentNetBrainFogPercent != lastDetoxMilestoneShown || todaySocialMinutes != lastSocialMinuteShown) {
+                        // Show for 10 seconds on first app open; show for 5 seconds on every 1% change or minute change!
+                        if (isFirstAppOpenPeek) {
+                            isFirstAppOpenPeek = false
                             lastDetoxMilestoneShown = currentNetBrainFogPercent
                             lastSocialMinuteShown = todaySocialMinutes
-                            detoxPeekExpiryMs = now + 4000L // Show for 4 seconds
+                            detoxPeekExpiryMs = now + 10000L // Show for 10 seconds on first app open
+                        } else if (currentNetBrainFogPercent != lastDetoxMilestoneShown || todaySocialMinutes != lastSocialMinuteShown) {
+                            lastDetoxMilestoneShown = currentNetBrainFogPercent
+                            lastSocialMinuteShown = todaySocialMinutes
+                            detoxPeekExpiryMs = maxOf(detoxPeekExpiryMs, now + 5000L) // Show for 5 seconds on each change
                         }
 
-                        // Normal: peeks for 4 seconds. Final 5 minutes: stays continuously visible (still) on screen!
+                        // Normal: peeks for 10s on open / 5s on change. Final 5 minutes: stays continuously visible (still) on screen!
                         if (isFinalFiveMinutes || now < detoxPeekExpiryMs) {
                             val word = getAwarenessStatusWord(currentNetBrainFogPercent)
                             val statusColor = getAwarenessColor(currentNetBrainFogPercent)
@@ -853,6 +865,8 @@ class FocusMonitorService : Service() {
             } else {
                 // Not in a monitored app -> Hide floating pill completely!
                 detoxPeekExpiryMs = 0L
+                isFirstAppOpenPeek = false
+                currentTargetMonitoredPackage = ""
                 hideFloatingPill()
             }
         }
