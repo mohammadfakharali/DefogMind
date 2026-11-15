@@ -1103,7 +1103,7 @@ class FocusMonitorService : Service() {
 
         if (floatingPillView == null) {
             val isDark = PassStorage.isDarkTheme(this)
-            val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
+            val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#F2F1F5F9")
             val density = resources.displayMetrics.density
             val padH = (14 * density).toInt()
             val padV = (7 * density).toInt()
@@ -1269,7 +1269,7 @@ class FocusMonitorService : Service() {
 
                 // Update background and border color
                 val isDark = PassStorage.isDarkTheme(this@FocusMonitorService)
-                val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#E6FFFFFF")
+                val pillBgColor = if (isDark) Color.parseColor("#D90B0F17") else Color.parseColor("#F2F1F5F9")
                 val density = resources.displayMetrics.density
                 val shape = GradientDrawable().apply {
                     setColor(pillBgColor)
