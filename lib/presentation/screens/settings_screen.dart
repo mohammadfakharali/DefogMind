@@ -17,7 +17,7 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   int _passDurationSeconds = 300;
   int _dailyLimitMinutes = 60;
   int _remainingPasses = 2;
@@ -33,6 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<String> _monitoredPackages = SocialApps.defaultPackageList;
   bool _isNavigatingToApps = false;
   bool _isLoading = true;
+  bool _isWidgetAlreadyAdded = false;
 
   bool get _hasUnsavedChanges =>
       _passDurationSeconds != _savedPassDurationSeconds ||
@@ -43,7 +44,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadSettings();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkWidgetStatus();
+    }
+  }
+
+  Future<void> _checkWidgetStatus() async {
+    final added = await UsageService.isWidgetAdded();
+    if (mounted && added != _isWidgetAlreadyAdded) {
+      setState(() => _isWidgetAlreadyAdded = added);
+    }
   }
 
   Future<void> _loadSettings() async {
@@ -55,6 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final adultEnabled = prefs.getBool('adult_tracking_enabled') ?? true;
     final packages = prefs.getStringList('monitored_packages') ?? SocialApps.defaultPackageList;
     final passes = await OxygenPassManager.getRemainingPasses();
+    final widgetAdded = await UsageService.isWidgetAdded();
 
     if (mounted) {
       setState(() {
@@ -70,6 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         _monitoredPackages = packages;
         _remainingPasses = passes;
+        _isWidgetAlreadyAdded = widgetAdded;
         _isLoading = false;
       });
     }
@@ -958,6 +982,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildWidgetPinTile() {
     return GestureDetector(
       onTap: () async {
+        if (_isWidgetAlreadyAdded) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('The DefogMind widget is already added to your Home Screen!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          return;
+        }
+
         final supported = await UsageService.isPinWidgetSupported();
         if (!supported) {
           if (mounted) {
@@ -974,10 +1008,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(pinned
-                  ? 'Request sent to add 2×2 DefogMind widget to your Home Screen!'
-                  : 'Long-press on home screen to place the DefogMind widget.'),
+                  ? 'Request sent to add DefogMind widget to your Home Screen!'
+                  : 'Widget is already on your home screen or not supported.'),
             ),
           );
+          _checkWidgetStatus();
         }
       },
       child: Container(
@@ -985,7 +1020,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         decoration: BoxDecoration(
           color: AppTheme.surfaceCard(context),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppTheme.mint.withValues(alpha: 0.3)),
+          border: Border.all(
+            color: _isWidgetAlreadyAdded
+                ? AppTheme.mint.withValues(alpha: 0.5)
+                : AppTheme.mint.withValues(alpha: 0.3),
+          ),
         ),
         child: Row(
           children: [
@@ -1003,7 +1042,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Add 2×2 Brain Clarity Widget',
+                    _isWidgetAlreadyAdded ? 'Brain Clarity Widget Active' : 'Add Brain Clarity Widget',
                     style: TextStyle(
                       color: AppTheme.textPrimary(context),
                       fontWeight: FontWeight.w700,
@@ -1012,7 +1051,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Glance at your live brain status & screen time without opening the app',
+                    _isWidgetAlreadyAdded
+                        ? 'Active on Home Screen • Glances at brain status & screen time'
+                        : 'Glance at your live brain status & screen time without opening the app',
                     style: TextStyle(
                       color: AppTheme.textSecondary(context),
                       fontSize: 11.5,
@@ -1026,13 +1067,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppTheme.mint,
+                color: _isWidgetAlreadyAdded
+                    ? AppTheme.mint.withValues(alpha: 0.16)
+                    : AppTheme.mint,
                 borderRadius: BorderRadius.circular(10),
+                border: _isWidgetAlreadyAdded
+                    ? Border.all(color: AppTheme.mint.withValues(alpha: 0.5))
+                    : null,
               ),
-              child: const Text(
-                'Pin 📌',
+              child: Text(
+                _isWidgetAlreadyAdded ? 'Added ✓' : 'Pin 📌',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: _isWidgetAlreadyAdded ? AppTheme.mint : Colors.black,
                   fontWeight: FontWeight.w800,
                   fontSize: 11,
                 ),

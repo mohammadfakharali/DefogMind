@@ -225,6 +225,15 @@ class UsageService {
     }
   }
 
+  static Future<bool> isWidgetAdded() async {
+    try {
+      final added = await _channel.invokeMethod<bool>('isWidgetAdded');
+      return added ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static Future<bool> isPinWidgetSupported() async {
     try {
       final supported = await _channel.invokeMethod<bool>('isPinWidgetSupported');

@@ -509,7 +509,8 @@ class _OnboardingDisclosureScreenState extends State<OnboardingDisclosureScreen>
 
     try {
       final isWidgetSupported = await UsageService.isPinWidgetSupported();
-      if (isWidgetSupported && mounted) {
+      final isAlreadyAdded = await UsageService.isWidgetAdded();
+      if (isWidgetSupported && !isAlreadyAdded && mounted) {
         final prefs = await SharedPreferences.getInstance();
         final shouldPrompt = prefs.getBool('widget_prompt_shown') ?? false;
         if (!shouldPrompt) {

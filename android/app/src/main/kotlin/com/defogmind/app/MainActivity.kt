@@ -382,6 +382,18 @@ class MainActivity : FlutterActivity() {
                         "kidsUsageMillis" to kidsUsageMap
                     ))
                 }
+                "isWidgetAdded" -> {
+                    try {
+                        val appWidgetManager = android.appwidget.AppWidgetManager.getInstance(this)
+                        val provider = android.content.ComponentName(this, DefogMindWidgetProvider::class.java)
+                        val widgetIds = appWidgetManager?.getAppWidgetIds(provider)
+                        val isAdded = widgetIds != null && widgetIds.isNotEmpty()
+                        result.success(isAdded)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        result.success(false)
+                    }
+                }
                 "isPinWidgetSupported" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         val appWidgetManager = getSystemService(android.appwidget.AppWidgetManager::class.java)
@@ -394,8 +406,12 @@ class MainActivity : FlutterActivity() {
                     try {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val appWidgetManager = getSystemService(android.appwidget.AppWidgetManager::class.java)
-                            if (appWidgetManager?.isRequestPinAppWidgetSupported == true) {
-                                val provider = android.content.ComponentName(this, DefogMindWidgetProvider::class.java)
+                            val provider = android.content.ComponentName(this, DefogMindWidgetProvider::class.java)
+                            val widgetIds = appWidgetManager?.getAppWidgetIds(provider)
+                            if (widgetIds != null && widgetIds.isNotEmpty()) {
+                                // Already added to home screen! Do not create duplicate widgets
+                                result.success(false)
+                            } else if (appWidgetManager?.isRequestPinAppWidgetSupported == true) {
                                 appWidgetManager.requestPinAppWidget(provider, null, null)
                                 result.success(true)
                             } else {
