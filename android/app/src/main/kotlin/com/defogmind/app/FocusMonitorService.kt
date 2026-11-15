@@ -820,6 +820,9 @@ class FocusMonitorService : Service() {
                         hideFloatingPill()
                         triggerBlockingOverlay(lastForegroundPackage)
                     } else {
+                        val remainingMins = (dailyLimitMinutes - todaySocialMinutes).coerceAtLeast(0)
+                        val isFinalFiveMinutes = dailyLimitMinutes > 0 && remainingMins <= 5
+
                         // Show 4-second fade-in/fade-out reminder immediately on entering app AND on every 1% change or minute change!
                         if (currentNetBrainFogPercent != lastDetoxMilestoneShown || todaySocialMinutes != lastSocialMinuteShown) {
                             lastDetoxMilestoneShown = currentNetBrainFogPercent
@@ -827,7 +830,8 @@ class FocusMonitorService : Service() {
                             detoxPeekExpiryMs = now + 4000L // Show for 4 seconds
                         }
 
-                        if (now < detoxPeekExpiryMs) {
+                        // Normal: peeks for 4 seconds. Final 5 minutes: stays continuously visible (still) on screen!
+                        if (isFinalFiveMinutes || now < detoxPeekExpiryMs) {
                             val word = getAwarenessStatusWord(currentNetBrainFogPercent)
                             val statusColor = getAwarenessColor(currentNetBrainFogPercent)
                             val messageText = if (dailyLimitMinutes > 0) {
@@ -835,7 +839,7 @@ class FocusMonitorService : Service() {
                             } else {
                                 "$word • ${todaySocialMinutes}m used"
                             }
-                            showOrUpdateFloatingPill("", true, messageText, statusColor, animateFadeIn = true)
+                            showOrUpdateFloatingPill("", true, messageText, statusColor, animateFadeIn = (now < detoxPeekExpiryMs && !isFinalFiveMinutes))
                         } else if (floatingPillView != null) {
                             fadeOutAndHideFloatingPill()
                         }
