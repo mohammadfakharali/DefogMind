@@ -153,22 +153,16 @@ class BrainCharacterView @JvmOverloads constructor(
         val leftFootX = cx - rx * 0.45f
         val rightFootX = cx + rx * 0.45f
 
-        strokePaint.color = Color.parseColor("#E8637A")
-        strokePaint.strokeWidth = max(1.8f, rx * 0.16f)
+        val (legCol, legOut) = when (tier) {
+            0 -> Pair("#D95874", "#B53952")
+            1 -> Pair("#CA5A70", "#A8324A")
+            2 -> Pair("#B8485E", "#982A40")
+            else -> Pair("#A0384E", "#882337")
+        }
 
-        // Left Leg
-        genericPath.reset()
-        genericPath.moveTo(leftHipX, legTopY)
-        val leftMidX = leftHipX - (if (tier == 3) 4f else 2f)
-        genericPath.quadTo(leftMidX, (legTopY + groundY) / 2f, leftFootX, groundY - 4f)
-        canvas.drawPath(genericPath, strokePaint)
-
-        // Right Leg
-        genericPath.reset()
-        genericPath.moveTo(rightHipX, legTopY)
-        val rightMidX = rightHipX + (if (tier == 3) 4f else 2f)
-        genericPath.quadTo(rightMidX, (legTopY + groundY) / 2f, rightFootX, groundY - 4f)
-        canvas.drawPath(genericPath, strokePaint)
+        val legW = max(2.5f, rx * 0.24f)
+        drawSolidLeg(canvas, leftHipX, legTopY, leftFootX, groundY - 4f, legW, -1f, legCol, legOut)
+        drawSolidLeg(canvas, rightHipX, legTopY, rightFootX, groundY - 4f, legW, 1f, legCol, legOut)
 
         // Ground shadow
         fillPaint.color = Color.argb(40, 0, 0, 0)
@@ -180,6 +174,23 @@ class BrainCharacterView @JvmOverloads constructor(
         // Sneakers
         drawSneaker(canvas, leftFootX, groundY, isLeft = true, rx = rx)
         drawSneaker(canvas, rightFootX, groundY, isLeft = false, rx = rx)
+    }
+
+    private fun drawSolidLeg(canvas: Canvas, hipX: Float, hipY: Float, footX: Float, footY: Float, width: Float, dir: Float, fillCol: String, strokeCol: String) {
+        val halfW = width / 2f
+        genericPath.reset()
+        genericPath.moveTo(hipX - halfW * 1.1f, hipY)
+        genericPath.quadTo(hipX + dir * -2f, (hipY + footY) / 2f, footX - halfW * 0.9f, footY)
+        genericPath.lineTo(footX + halfW * 0.9f, footY)
+        genericPath.quadTo(hipX + halfW * 2.0f + dir * -2f, (hipY + footY) / 2f, hipX + halfW * 1.1f, hipY)
+        genericPath.close()
+
+        fillPaint.color = Color.parseColor(fillCol)
+        canvas.drawPath(genericPath, fillPaint)
+
+        strokePaint.color = Color.parseColor(strokeCol)
+        strokePaint.strokeWidth = 1.6f
+        canvas.drawPath(genericPath, strokePaint)
     }
 
     private fun drawSneaker(canvas: Canvas, x: Float, y: Float, isLeft: Boolean, rx: Float) {
@@ -332,9 +343,14 @@ class BrainCharacterView @JvmOverloads constructor(
     }
 
     private fun drawArmsAndGloves(canvas: Canvas, cx: Float, cy: Float, rx: Float, ry: Float) {
-        strokePaint.color = Color.parseColor("#E8637A")
-        strokePaint.strokeWidth = max(1.8f, rx * 0.16f)
+        val (legCol, legOut) = when (tier) {
+            0 -> Pair("#D95874", "#B53952")
+            1 -> Pair("#CA5A70", "#A8324A")
+            2 -> Pair("#B8485E", "#982A40")
+            else -> Pair("#A0384E", "#882337")
+        }
 
+        val armW = max(2.5f, rx * 0.24f)
         val leftShoulderX = cx - rx * 0.88f
         val leftShoulderY = cy + ry * 0.20f
         val rightShoulderX = cx + rx * 0.88f
@@ -342,100 +358,148 @@ class BrainCharacterView @JvmOverloads constructor(
 
         when (tier) {
             0 -> {
-                // Waving hand
+                // 1. FRESH: Left curves UP in wave, Right curves OUT & DOWN with fingers down
                 val wave = sin(animValue * 4.0 * PI).toFloat() * (ry * 0.15f)
                 val leftHandX = cx - rx * 1.25f
                 val leftHandY = cy - ry * 0.35f + wave
+                val leftElbowX = (leftShoulderX + leftHandX) / 2f - 2f
+                val leftElbowY = (leftShoulderY + leftHandY) / 2f + 2f
 
-                genericPath.reset()
-                genericPath.moveTo(leftShoulderX, leftShoulderY)
-                genericPath.quadTo(cx - rx * 1.15f, cy, leftHandX, leftHandY)
-                canvas.drawPath(genericPath, strokePaint)
-                drawGlove(canvas, leftHandX, leftHandY, -34f, isOpen = true, rx = rx)
+                drawArmTube(canvas, leftShoulderX, leftShoulderY, leftElbowX, leftElbowY, leftHandX, leftHandY, armW, legCol, legOut)
+                val leftAngle = atan2(leftHandY - leftElbowY, leftHandX - leftElbowX)
+                drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
 
-                // Hip fist
-                val rightHandX = cx + rx * 1.05f
-                val rightHandY = cy + ry * 0.55f
-                genericPath.reset()
-                genericPath.moveTo(rightShoulderX, rightShoulderY)
-                genericPath.quadTo(cx + rx * 1.20f, cy + ry * 0.38f, rightHandX, rightHandY)
-                canvas.drawPath(genericPath, strokePaint)
-                drawGlove(canvas, rightHandX, rightHandY, 28f, isOpen = false, rx = rx)
+                // Right arm curves gracefully OUT and DOWN
+                val rightElbowX = cx + rx * 1.26f
+                val rightElbowY = cy + ry * 0.44f
+                val rightHandX = cx + rx * 1.10f
+                val rightHandY = cy + ry * 0.78f
+
+                drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
+                val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
             }
             1 -> {
-                // Hanging arms
-                val leftHandX = cx - rx * 1.05f
-                val leftHandY = cy + ry * 0.75f
-                val rightHandX = cx + rx * 1.05f
-                val rightHandY = cy + ry * 0.75f
-                canvas.drawLine(leftShoulderX, leftShoulderY, leftHandX, leftHandY, strokePaint)
-                canvas.drawLine(rightShoulderX, rightShoulderY, rightHandX, rightHandY, strokePaint)
-                drawGlove(canvas, leftHandX, leftHandY, 12f, isOpen = false, rx = rx)
-                drawGlove(canvas, rightHandX, rightHandY, -12f, isOpen = false, rx = rx)
+                // 2. TIRED: Both arms hanging down loosely, fingers down
+                val leftHandX = cx - rx * 1.02f
+                val leftHandY = cy + ry * 0.78f
+                val rightHandX = cx + rx * 1.02f
+                val rightHandY = cy + ry * 0.78f
+                val leftElbowX = leftShoulderX - 1f
+                val leftElbowY = (leftShoulderY + leftHandY) / 2f
+                val rightElbowX = rightShoulderX + 1f
+                val rightElbowY = (rightShoulderY + rightHandY) / 2f
+
+                drawArmTube(canvas, leftShoulderX, leftShoulderY, leftElbowX, leftElbowY, leftHandX, leftHandY, armW, legCol, legOut)
+                drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
+
+                val leftAngle = atan2(leftHandY - leftElbowY, leftHandX - leftElbowX)
+                val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
+                drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
             }
             2 -> {
-                // Holding head
-                val leftHandX = cx - rx * 0.95f
-                val leftHandY = cy - ry * 0.10f
-                val rightHandX = cx + rx * 0.95f
-                val rightHandY = cy - ry * 0.10f
+                // 3. HEAVY: Wide, curvy flared elbows gripping temples
+                val leftHandX = cx - rx * 0.88f
+                val leftHandY = cy - ry * 0.12f
+                val rightHandX = cx + rx * 0.88f
+                val rightHandY = cy - ry * 0.12f
+                val leftElbowX = cx - rx * 1.42f
+                val leftElbowY = cy + ry * 0.26f
+                val rightElbowX = cx + rx * 1.42f
+                val rightElbowY = cy + ry * 0.26f
 
-                genericPath.reset()
-                genericPath.moveTo(leftShoulderX, leftShoulderY)
-                genericPath.quadTo(cx - rx * 1.22f, cy + ry * 0.05f, leftHandX, leftHandY)
-                canvas.drawPath(genericPath, strokePaint)
+                drawArmTube(canvas, leftShoulderX, leftShoulderY, leftElbowX, leftElbowY, leftHandX, leftHandY, armW, legCol, legOut)
+                drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
 
-                genericPath.reset()
-                genericPath.moveTo(rightShoulderX, rightShoulderY)
-                genericPath.quadTo(cx + rx * 1.22f, cy + ry * 0.05f, rightHandX, rightHandY)
-                canvas.drawPath(genericPath, strokePaint)
-
-                drawGlove(canvas, leftHandX, leftHandY, -68f, isOpen = true, rx = rx)
-                drawGlove(canvas, rightHandX, rightHandY, 68f, isOpen = true, rx = rx)
+                val leftAngle = atan2(leftHandY - leftElbowY, leftHandX - leftElbowX)
+                val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
+                drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
             }
             else -> {
-                // Trembling sob
+                // 4. OVERLOADED: Hands trembling near face
                 val tr = sin(animValue * 30.0 * PI).toFloat() * (rx * 0.08f)
                 val leftHandX = cx - rx * 0.45f + tr
                 val leftHandY = cy + ry * 0.40f
                 val rightHandX = cx + rx * 0.45f - tr
                 val rightHandY = cy + ry * 0.40f
+                val leftElbowX = cx - rx * 0.85f
+                val leftElbowY = cy + ry * 0.50f
+                val rightElbowX = cx + rx * 0.85f
+                val rightElbowY = cy + ry * 0.50f
 
-                genericPath.reset()
-                genericPath.moveTo(leftShoulderX, leftShoulderY)
-                genericPath.quadTo(cx - rx * 0.85f, cy + ry * 0.50f, leftHandX, leftHandY)
-                canvas.drawPath(genericPath, strokePaint)
+                drawArmTube(canvas, leftShoulderX, leftShoulderY, leftElbowX, leftElbowY, leftHandX, leftHandY, armW, legCol, legOut)
+                drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
 
-                genericPath.reset()
-                genericPath.moveTo(rightShoulderX, rightShoulderY)
-                genericPath.quadTo(cx + rx * 0.85f, cy + ry * 0.50f, rightHandX, rightHandY)
-                canvas.drawPath(genericPath, strokePaint)
-
-                drawGlove(canvas, leftHandX, leftHandY, -23f, isOpen = false, rx = rx)
-                drawGlove(canvas, rightHandX, rightHandY, 23f, isOpen = false, rx = rx)
+                val leftAngle = atan2(leftHandY - leftElbowY, leftHandX - leftElbowX)
+                val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
+                drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
             }
         }
     }
 
-    private fun drawGlove(canvas: Canvas, x: Float, y: Float, degrees: Float, isOpen: Boolean, rx: Float) {
+    private fun drawArmTube(canvas: Canvas, x1: Float, y1: Float, cxP: Float, cyP: Float, x2: Float, y2: Float, width: Float, fillCol: String, strokeCol: String) {
+        genericPath.reset()
+        genericPath.moveTo(x1, y1)
+        genericPath.quadTo(cxP, cyP, x2, y2)
+
+        strokePaint.color = Color.parseColor(strokeCol)
+        strokePaint.strokeWidth = width + 1.2f
+        canvas.drawPath(genericPath, strokePaint)
+
+        strokePaint.color = Color.parseColor(fillCol)
+        strokePaint.strokeWidth = width
+        canvas.drawPath(genericPath, strokePaint)
+    }
+
+    private fun drawSeamlessGlove(canvas: Canvas, x: Float, y: Float, angleRad: Float, isLeft: Boolean, rx: Float) {
         canvas.save()
         canvas.translate(x, y)
-        canvas.rotate(degrees)
+        canvas.rotate((angleRad * 180f / PI).toFloat())
+
+        val mirrorY = if (isLeft) 1f else -1f
+        canvas.scale(1f, mirrorY)
+
+        val scale = rx / 38f
+        canvas.scale(scale, scale)
 
         fillPaint.color = Color.WHITE
         strokePaint.color = Color.parseColor("#0F172A")
-        strokePaint.strokeWidth = 1.0f
+        strokePaint.strokeWidth = 1.6f
 
-        val sz = rx * 0.32f
-        // Cuff
-        rectF.set(-sz * 0.6f, -sz * 0.3f, sz * 0.6f, sz * 0.3f)
-        canvas.drawRoundRect(rectF, sz * 0.25f, sz * 0.25f, fillPaint)
-        canvas.drawRoundRect(rectF, sz * 0.25f, sz * 0.25f, strokePaint)
+        // Wrist Cuff
+        rectF.set(-4f, -9f, 3f, 9f)
+        canvas.drawRoundRect(rectF, 3.5f, 3.5f, fillPaint)
+        canvas.drawRoundRect(rectF, 3.5f, 3.5f, strokePaint)
 
-        // Hand
-        rectF.set(-sz * 0.55f, sz * 0.15f, sz * 0.55f, sz * 1.15f)
-        canvas.drawRoundRect(rectF, sz * 0.45f, sz * 0.45f, fillPaint)
-        canvas.drawRoundRect(rectF, sz * 0.45f, sz * 0.45f, strokePaint)
+        // Unified Hand
+        genericPath.reset()
+        genericPath.moveTo(3f, 7f)
+        genericPath.lineTo(15f, 7.5f)
+        rectF.set(13f, 3.5f, 17.5f, 8f)
+        genericPath.arcTo(rectF, 90f, -180f, false)
+        genericPath.lineTo(12f, 3.5f)
+
+        genericPath.lineTo(19f, 3.0f)
+        rectF.set(16.5f, -1.6f, 21.5f, 3.2f)
+        genericPath.arcTo(rectF, 90f, -180f, false)
+        genericPath.lineTo(13f, -1.6f)
+
+        genericPath.lineTo(17f, -2.2f)
+        rectF.set(14.5f, -6.5f, 19.5f, -2.0f)
+        genericPath.arcTo(rectF, 90f, -180f, false)
+        genericPath.lineTo(9f, -6.5f)
+
+        genericPath.quadTo(11f, -11f, 14f, -14f)
+        rectF.set(10f, -17f, 15f, -12f)
+        genericPath.arcTo(rectF, -45f, 180f, false)
+        genericPath.quadTo(6f, -15f, 3f, -7.5f)
+        genericPath.close()
+
+        canvas.drawPath(genericPath, fillPaint)
+        canvas.drawPath(genericPath, strokePaint)
 
         canvas.restore()
     }
@@ -538,7 +602,8 @@ class BrainCharacterView @JvmOverloads constructor(
                     canvas.drawLine(leftEyeX - eyeW * 0.5f, eyeY, leftEyeX + eyeW * 0.5f, eyeY, strokePaint)
                     canvas.drawLine(rightEyeX - eyeW * 0.5f, eyeY, rightEyeX + eyeW * 0.5f, eyeY, strokePaint)
                 } else {
-                    fun drawHalfEye(ex: Float) {
+                    val pR = eyeW * 0.28f
+                    fun drawSleepyEye(ex: Float) {
                         canvas.save()
                         canvas.clipRect(ex - eyeW, eyeY - 1f, ex + eyeW, eyeY + eyeH)
                         fillPaint.color = Color.WHITE
@@ -548,17 +613,34 @@ class BrainCharacterView @JvmOverloads constructor(
                         canvas.drawOval(rectF, fillPaint)
                         canvas.drawOval(rectF, strokePaint)
                         fillPaint.color = Color.parseColor("#1E293B")
-                        canvas.drawCircle(ex, eyeY + 2f, eyeW * 0.28f, fillPaint)
+                        canvas.drawCircle(ex, eyeY + 1.8f, pR, fillPaint)
+                        fillPaint.color = Color.WHITE
+                        canvas.drawCircle(ex - pR * 0.35f, eyeY + 1.8f - pR * 0.35f, pR * 0.38f, fillPaint)
                         canvas.restore()
                     }
-                    drawHalfEye(leftEyeX)
-                    drawHalfEye(rightEyeX)
+                    drawSleepyEye(leftEyeX)
+                    drawSleepyEye(rightEyeX)
 
+                    // Droopy eyelid line
                     strokePaint.color = Color.parseColor("#0F172A")
                     strokePaint.strokeWidth = 1.4f
                     canvas.drawLine(leftEyeX - eyeW * 0.6f, eyeY - 1f, leftEyeX + eyeW * 0.6f, eyeY + 1.5f, strokePaint)
                     canvas.drawLine(rightEyeX - eyeW * 0.6f, eyeY + 1.5f, rightEyeX + eyeW * 0.6f, eyeY - 1f, strokePaint)
+
+                    // Under-eye crease
+                    strokePaint.color = Color.argb(115, 168, 50, 74)
+                    strokePaint.strokeWidth = 0.9f
+                    rectF.set(leftEyeX - eyeW * 0.42f, eyeY + 1f, leftEyeX + eyeW * 0.42f, eyeY + eyeH * 0.5f)
+                    canvas.drawArc(rectF, 20f, 140f, false, strokePaint)
+                    rectF.set(rightEyeX - eyeW * 0.42f, eyeY + 1f, rightEyeX + eyeW * 0.42f, eyeY + eyeH * 0.5f)
+                    canvas.drawArc(rectF, 20f, 140f, false, strokePaint)
                 }
+
+                // Drooping brows
+                strokePaint.color = Color.parseColor("#4A1019")
+                strokePaint.strokeWidth = 1.3f
+                canvas.drawLine(leftEyeX - eyeW * 0.5f, eyeY - eyeH * 0.55f, leftEyeX + eyeW * 0.4f, eyeY - eyeH * 0.35f, strokePaint)
+                canvas.drawLine(rightEyeX - eyeW * 0.4f, eyeY - eyeH * 0.35f, rightEyeX + eyeW * 0.5f, eyeY - eyeH * 0.55f, strokePaint)
 
                 // Wavy sigh mouth
                 strokePaint.color = Color.parseColor("#0F172A")
@@ -637,36 +719,18 @@ class BrainCharacterView @JvmOverloads constructor(
                 canvas.drawCircle(cx - rx * 0.80f, cy - ry * 0.70f, 2.5f * pulse, fillPaint)
             }
             1 -> {
-                // Stage 2: Single teardrop below right eye, vanishes completely before bottom
-                val phase = (animValue * 1.5f) % 1.0f
-                drawDroppingTear(
-                    canvas,
-                    startX = cx + eyeSpacing * 0.95f,
-                    startY = eyeY + ry * 0.22f,
-                    totalDistance = ry * 0.50f,
-                    phase = phase,
-                    maxRadius = 2.4f
-                )
+                // Stage 2: Calm tired face, no tear
             }
             2 -> {
-                // Stage 3: Teardrops below BOTH eyes, staggered, vanishing before bottom
-                val phaseLeft = (animValue * 1.6f) % 1.0f
-                val phaseRight = ((animValue + 0.45f) * 1.6f) % 1.0f
+                // Stage 3: Single slow side tear on right cheek (speed 0.45)
+                val phase = (animValue * 0.45f) % 1.0f
                 drawDroppingTear(
                     canvas,
-                    startX = cx - eyeSpacing * 0.95f,
-                    startY = eyeY + ry * 0.22f,
+                    startX = cx + eyeSpacing * 0.95f + 2f,
+                    startY = eyeY + 2f,
                     totalDistance = ry * 0.55f,
-                    phase = phaseLeft,
-                    maxRadius = 2.6f
-                )
-                drawDroppingTear(
-                    canvas,
-                    startX = cx + eyeSpacing * 0.95f,
-                    startY = eyeY + ry * 0.22f,
-                    totalDistance = ry * 0.55f,
-                    phase = phaseRight,
-                    maxRadius = 2.6f
+                    phase = phase,
+                    maxRadius = 2.4f
                 )
             }
             3 -> {

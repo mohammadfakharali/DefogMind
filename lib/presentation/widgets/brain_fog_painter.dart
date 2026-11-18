@@ -170,12 +170,6 @@ class BrainFogPainter extends CustomPainter {
 
   // --- LEGS AND CARTOON SNEAKERS ---
   void _drawLegsAndSneakers(Canvas canvas, Offset center, double rx, double ry, double totalHeight) {
-    final legPaint = Paint()
-      ..color = const Color(0xFFE8637A) // matching cute light-rose leg tone
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0
-      ..strokeCap = StrokeCap.round;
-
     final groundY = totalHeight * 0.88;
     final legTopY = center.dy + ry * 0.82;
 
@@ -185,25 +179,30 @@ class BrainFogPainter extends CustomPainter {
     final leftFootX = center.dx - rx * 0.45;
     final rightFootX = center.dx + rx * 0.45;
 
-    // Draw Left Leg
-    final leftLeg = Path();
-    leftLeg.moveTo(leftHipX, legTopY);
-    if (tier == FogTier.sludgeGlitch) {
-      leftLeg.quadraticBezierTo(leftHipX - 8, (legTopY + groundY) / 2, leftFootX, groundY - 14);
-    } else {
-      leftLeg.quadraticBezierTo(leftHipX - 4, (legTopY + groundY) / 2, leftFootX, groundY - 14);
+    final Color legColor;
+    final Color legOutline;
+    switch (tier) {
+      case FogTier.cleanMind:
+        legColor = const Color(0xFFD95874);
+        legOutline = const Color(0xFFB53952);
+        break;
+      case FogTier.mildHaze:
+        legColor = const Color(0xFFCA5A70);
+        legOutline = const Color(0xFFA8324A);
+        break;
+      case FogTier.denseFog:
+        legColor = const Color(0xFFB8485E);
+        legOutline = const Color(0xFF982A40);
+        break;
+      case FogTier.sludgeGlitch:
+        legColor = const Color(0xFFA0384E);
+        legOutline = const Color(0xFF882337);
+        break;
     }
-    canvas.drawPath(leftLeg, legPaint);
 
-    // Draw Right Leg
-    final rightLeg = Path();
-    rightLeg.moveTo(rightHipX, legTopY);
-    if (tier == FogTier.sludgeGlitch) {
-      rightLeg.quadraticBezierTo(rightHipX + 8, (legTopY + groundY) / 2, rightFootX, groundY - 14);
-    } else {
-      rightLeg.quadraticBezierTo(rightHipX + 4, (legTopY + groundY) / 2, rightFootX, groundY - 14);
-    }
-    canvas.drawPath(rightLeg, legPaint);
+    const legWidth = 11.0;
+    _drawSolidLeg(canvas, leftHipX, legTopY, leftFootX, groundY - 14, legWidth, -1.0, legColor, legOutline);
+    _drawSolidLeg(canvas, rightHipX, legTopY, rightFootX, groundY - 14, legWidth, 1.0, legColor, legOutline);
 
     // Ground shadows
     final shadowPaint = Paint()
@@ -215,6 +214,29 @@ class BrainFogPainter extends CustomPainter {
     // Draw Sneakers
     _drawSneaker(canvas, Offset(leftFootX, groundY), isLeft: true);
     _drawSneaker(canvas, Offset(rightFootX, groundY), isLeft: false);
+  }
+
+  void _drawSolidLeg(Canvas canvas, double hipX, double hipY, double footX, double footY, double width, double dir, Color legColor, Color legOutline) {
+    final halfW = width / 2;
+    final path = Path();
+    path.moveTo(hipX - halfW * 1.1, hipY);
+    path.quadraticBezierTo(hipX + dir * -2, (hipY + footY) / 2, footX - halfW * 0.9, footY);
+    path.lineTo(footX + halfW * 0.9, footY);
+    path.quadraticBezierTo(hipX + halfW * 2.0 + dir * -2, (hipY + footY) / 2, hipX + halfW * 1.1, hipY);
+    path.close();
+
+    final fillPaint = Paint()
+      ..color = legColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+
+    final strokePaint = Paint()
+      ..color = legOutline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, strokePaint);
   }
 
   void _drawSneaker(Canvas canvas, Offset footPos, {required bool isLeft}) {
@@ -524,134 +546,179 @@ class BrainFogPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  // --- ARMS AND WHITE CARTOON GLOVES ---
+  // --- ARMS AND SEAMLESS CARTOON GLOVES ---
   void _drawArmsAndGloves(Canvas canvas, Offset center, double rx, double ry) {
-    final armPaint = Paint()
-      ..color = const Color(0xFFE8637A) // matching light-rose arm tube
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0
-      ..strokeCap = StrokeCap.round;
+    final Color legColor;
+    final Color legOutline;
+    switch (tier) {
+      case FogTier.cleanMind:
+        legColor = const Color(0xFFD95874);
+        legOutline = const Color(0xFFB53952);
+        break;
+      case FogTier.mildHaze:
+        legColor = const Color(0xFFCA5A70);
+        legOutline = const Color(0xFFA8324A);
+        break;
+      case FogTier.denseFog:
+        legColor = const Color(0xFFB8485E);
+        legOutline = const Color(0xFF982A40);
+        break;
+      case FogTier.sludgeGlitch:
+        legColor = const Color(0xFFA0384E);
+        legOutline = const Color(0xFF882337);
+        break;
+    }
 
     final leftShoulder = Offset(center.dx - rx * 0.88, center.dy + ry * 0.20);
     final rightShoulder = Offset(center.dx + rx * 0.88, center.dy + ry * 0.20);
+    const armWidth = 11.0;
 
     if (tier == FogTier.cleanMind) {
-      // FRESH: Left arm waving, right on hip
+      // 1. FRESH: Left arm curves UP in a wave, Right arm curves OUT & DOWN with fingers down
       final waveOffset = sin(animationValue * 4 * pi) * 6.0;
       final leftHandPos = Offset(center.dx - rx * 1.25, center.dy - ry * 0.35 + waveOffset);
-      final leftElbow = Offset(center.dx - rx * 1.15, center.dy);
+      final leftElbow = Offset((leftShoulder.dx + leftHandPos.dx) / 2 - 8, (leftShoulder.dy + leftHandPos.dy) / 2 + 6);
 
-      final leftArm = Path();
-      leftArm.moveTo(leftShoulder.dx, leftShoulder.dy);
-      leftArm.quadraticBezierTo(leftElbow.dx, leftElbow.dy, leftHandPos.dx, leftHandPos.dy);
-      canvas.drawPath(leftArm, armPaint);
-      _drawCartoonGlove(canvas, leftHandPos, angle: -0.6, isOpenHand: true);
+      _drawArmTube(canvas, leftShoulder, leftElbow, leftHandPos, armWidth, legColor, legOutline);
+      final leftForearmAngle = atan2(leftHandPos.dy - leftElbow.dy, leftHandPos.dx - leftElbow.dx);
+      _drawSeamlessCartoonGlove(canvas, leftHandPos, leftForearmAngle, isLeft: true);
 
-      final rightHandPos = Offset(center.dx + rx * 1.05, center.dy + ry * 0.55);
-      final rightElbow = Offset(center.dx + rx * 1.20, center.dy + ry * 0.38);
+      // Right arm curves gracefully OUT and DOWN
+      final rightElbow = Offset(center.dx + rx * 1.26, center.dy + ry * 0.44);
+      final rightHandPos = Offset(center.dx + rx * 1.10, center.dy + ry * 0.78);
 
-      final rightArm = Path();
-      rightArm.moveTo(rightShoulder.dx, rightShoulder.dy);
-      rightArm.quadraticBezierTo(rightElbow.dx, rightElbow.dy, rightHandPos.dx, rightHandPos.dy);
-      canvas.drawPath(rightArm, armPaint);
-      _drawCartoonGlove(canvas, rightHandPos, angle: 0.5, isOpenHand: false);
+      _drawArmTube(canvas, rightShoulder, rightElbow, rightHandPos, armWidth, legColor, legOutline);
+      final rightAngle = atan2(rightHandPos.dy - rightElbow.dy, rightHandPos.dx - rightElbow.dx);
+      _drawSeamlessCartoonGlove(canvas, rightHandPos, rightAngle, isLeft: false);
 
     } else if (tier == FogTier.mildHaze) {
-      // TIRED: Arms hanging loosely
-      final leftHandPos = Offset(center.dx - rx * 1.05, center.dy + ry * 0.75);
-      final rightHandPos = Offset(center.dx + rx * 1.05, center.dy + ry * 0.75);
+      // 2. TIRED: Both arms hanging down loosely with fingers down
+      final leftHandPos = Offset(center.dx - rx * 1.02, center.dy + ry * 0.78);
+      final rightHandPos = Offset(center.dx + rx * 1.02, center.dy + ry * 0.78);
+      final leftElbow = Offset(leftShoulder.dx - 3, (leftShoulder.dy + leftHandPos.dy) / 2);
+      final rightElbow = Offset(rightShoulder.dx + 3, (rightShoulder.dy + rightHandPos.dy) / 2);
 
-      canvas.drawLine(leftShoulder, leftHandPos, armPaint);
-      canvas.drawLine(rightShoulder, rightHandPos, armPaint);
+      _drawArmTube(canvas, leftShoulder, leftElbow, leftHandPos, armWidth, legColor, legOutline);
+      _drawArmTube(canvas, rightShoulder, rightElbow, rightHandPos, armWidth, legColor, legOutline);
 
-      _drawCartoonGlove(canvas, leftHandPos, angle: 0.2, isOpenHand: false);
-      _drawCartoonGlove(canvas, rightHandPos, angle: -0.2, isOpenHand: false);
+      final leftAngle = atan2(leftHandPos.dy - leftElbow.dy, leftHandPos.dx - leftElbow.dx);
+      final rightAngle = atan2(rightHandPos.dy - rightElbow.dy, rightHandPos.dx - rightElbow.dx);
+      _drawSeamlessCartoonGlove(canvas, leftHandPos, leftAngle, isLeft: true);
+      _drawSeamlessCartoonGlove(canvas, rightHandPos, rightAngle, isLeft: false);
 
     } else if (tier == FogTier.denseFog) {
-      // HEAVY: Hands clutching sides of head
-      final leftHandPos = Offset(center.dx - rx * 0.95, center.dy - ry * 0.10);
-      final rightHandPos = Offset(center.dx + rx * 0.95, center.dy - ry * 0.10);
+      // 3. HEAVY: Wide, curvy flared elbows gripping temples
+      final leftHandPos = Offset(center.dx - rx * 0.88, center.dy - ry * 0.12);
+      final rightHandPos = Offset(center.dx + rx * 0.88, center.dy - ry * 0.12);
+      final leftElbow = Offset(center.dx - rx * 1.42, center.dy + ry * 0.26);
+      final rightElbow = Offset(center.dx + rx * 1.42, center.dy + ry * 0.26);
 
-      final leftArm = Path()
-        ..moveTo(leftShoulder.dx, leftShoulder.dy)
-        ..quadraticBezierTo(center.dx - rx * 1.22, center.dy + ry * 0.05, leftHandPos.dx, leftHandPos.dy);
-      canvas.drawPath(leftArm, armPaint);
+      _drawArmTube(canvas, leftShoulder, leftElbow, leftHandPos, armWidth, legColor, legOutline);
+      _drawArmTube(canvas, rightShoulder, rightElbow, rightHandPos, armWidth, legColor, legOutline);
 
-      final rightArm = Path()
-        ..moveTo(rightShoulder.dx, rightShoulder.dy)
-        ..quadraticBezierTo(center.dx + rx * 1.22, center.dy + ry * 0.05, rightHandPos.dx, rightHandPos.dy);
-      canvas.drawPath(rightArm, armPaint);
-
-      _drawCartoonGlove(canvas, leftHandPos, angle: -1.2, isOpenHand: true);
-      _drawCartoonGlove(canvas, rightHandPos, angle: 1.2, isOpenHand: true);
+      final leftAngle = atan2(leftHandPos.dy - leftElbow.dy, leftHandPos.dx - leftElbow.dx);
+      final rightAngle = atan2(rightHandPos.dy - rightElbow.dy, rightHandPos.dx - rightElbow.dx);
+      _drawSeamlessCartoonGlove(canvas, leftHandPos, leftAngle, isLeft: true);
+      _drawSeamlessCartoonGlove(canvas, rightHandPos, rightAngle, isLeft: false);
 
     } else {
-      // OVERLOADED: Hands trembling in sobbing posture
-      final tremble = sin(animationValue * 30 * pi) * 1.8;
+      // 4. OVERLOADED: Hands trembling near face in sobbing posture
+      final tremble = sin(animationValue * 30 * pi) * 1.5;
       final leftHandPos = Offset(center.dx - rx * 0.45 + tremble, center.dy + ry * 0.40);
       final rightHandPos = Offset(center.dx + rx * 0.45 - tremble, center.dy + ry * 0.40);
+      final leftElbow = Offset(center.dx - rx * 0.85, center.dy + ry * 0.50);
+      final rightElbow = Offset(center.dx + rx * 0.85, center.dy + ry * 0.50);
 
-      final leftArm = Path()
-        ..moveTo(leftShoulder.dx, leftShoulder.dy)
-        ..quadraticBezierTo(center.dx - rx * 0.85, center.dy + ry * 0.50, leftHandPos.dx, leftHandPos.dy);
-      canvas.drawPath(leftArm, armPaint);
+      _drawArmTube(canvas, leftShoulder, leftElbow, leftHandPos, armWidth, legColor, legOutline);
+      _drawArmTube(canvas, rightShoulder, rightElbow, rightHandPos, armWidth, legColor, legOutline);
 
-      final rightArm = Path()
-        ..moveTo(rightShoulder.dx, rightShoulder.dy)
-        ..quadraticBezierTo(center.dx + rx * 0.85, center.dy + ry * 0.50, rightHandPos.dx, rightHandPos.dy);
-      canvas.drawPath(rightArm, armPaint);
-
-      _drawCartoonGlove(canvas, leftHandPos, angle: -0.4, isOpenHand: false);
-      _drawCartoonGlove(canvas, rightHandPos, angle: 0.4, isOpenHand: false);
+      final leftAngle = atan2(leftHandPos.dy - leftElbow.dy, leftHandPos.dx - leftElbow.dx);
+      final rightAngle = atan2(rightHandPos.dy - rightElbow.dy, rightHandPos.dx - rightElbow.dx);
+      _drawSeamlessCartoonGlove(canvas, leftHandPos, leftAngle, isLeft: true);
+      _drawSeamlessCartoonGlove(canvas, rightHandPos, rightAngle, isLeft: false);
     }
   }
 
-  void _drawCartoonGlove(Canvas canvas, Offset handPos, {required double angle, required bool isOpenHand}) {
-    canvas.save();
-    canvas.translate(handPos.dx, handPos.dy);
-    canvas.rotate(angle);
+  void _drawArmTube(Canvas canvas, Offset p1, Offset ctrl, Offset p2, double width, Color legColor, Color legOutline) {
+    final path = Path();
+    path.moveTo(p1.dx, p1.dy);
+    path.quadraticBezierTo(ctrl.dx, ctrl.dy, p2.dx, p2.dy);
 
-    final gloveFill = Paint()..color = Colors.white;
-    final gloveStroke = Paint()
+    final outlinePaint = Paint()
+      ..color = legOutline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width + 2.4
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, outlinePaint);
+
+    final fillPaint = Paint()
+      ..color = legColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, fillPaint);
+  }
+
+  void _drawSeamlessCartoonGlove(Canvas canvas, Offset pos, double forearmAngle, {required bool isLeft}) {
+    canvas.save();
+    canvas.translate(pos.dx, pos.dy);
+    canvas.rotate(forearmAngle);
+
+    final mirrorY = isLeft ? 1.0 : -1.0;
+    canvas.scale(1.0, mirrorY);
+
+    final fillPaint = Paint()..color = Colors.white;
+    final strokePaint = Paint()
       ..color = const Color(0xFF0F172A)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.8
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
-    // Wrist Cuff
+    // 1. Wrist Cuff
     final cuffRect = RRect.fromRectAndRadius(
-      const Rect.fromLTWH(-9, -4, 18, 8),
-      const Radius.circular(4),
+      const Rect.fromLTWH(-4, -9, 7, 18),
+      const Radius.circular(3.5),
     );
-    canvas.drawRRect(cuffRect, gloveFill);
-    canvas.drawRRect(cuffRect, gloveStroke);
+    canvas.drawRRect(cuffRect, fillPaint);
+    canvas.drawRRect(cuffRect, strokePaint);
 
-    if (isOpenHand) {
-      final handPath = Path();
-      handPath.moveTo(-6, 3);
-      handPath.lineTo(-10, 8);
-      handPath.quadraticBezierTo(-12, 12, -8, 12);
-      handPath.lineTo(-4, 9);
-      handPath.lineTo(-3, 14);
-      handPath.quadraticBezierTo(0, 16, 2, 14);
-      handPath.lineTo(4, 13);
-      handPath.quadraticBezierTo(7, 15, 8, 12);
-      handPath.lineTo(6, 4);
-      handPath.close();
+    // 2. Unified Hand Silhouette (Fingers extend along +X axis)
+    final handPath = Path();
+    handPath.moveTo(3, 7);
 
-      canvas.drawPath(handPath, gloveFill);
-      canvas.drawPath(handPath, gloveStroke);
-    } else {
-      final fistRect = RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-8, 3, 16, 15),
-        const Radius.circular(7),
-      );
-      canvas.drawRRect(fistRect, gloveFill);
-      canvas.drawRRect(fistRect, gloveStroke);
+    // Pinky
+    handPath.lineTo(15, 7.5);
+    handPath.arcToPoint(const Offset(15, 3.5), radius: const Radius.circular(2.2), clockwise: false);
+    handPath.lineTo(12, 3.5);
 
-      canvas.drawLine(const Offset(-3, 10), const Offset(4, 10), gloveStroke);
-      canvas.drawLine(const Offset(-2, 14), const Offset(3, 14), gloveStroke);
-    }
+    // Middle (Longest)
+    handPath.lineTo(19, 3.0);
+    handPath.arcToPoint(const Offset(19, -1.6), radius: const Radius.circular(2.4), clockwise: false);
+    handPath.lineTo(13, -1.6);
+
+    // Index
+    handPath.lineTo(17, -2.2);
+    handPath.arcToPoint(const Offset(17, -6.5), radius: const Radius.circular(2.3), clockwise: false);
+    handPath.lineTo(9, -6.5);
+
+    // Thumb (Curved naturally inward)
+    handPath.quadraticBezierTo(11, -11, 14, -14);
+    handPath.arcToPoint(const Offset(10, -16), radius: const Radius.circular(2.3), clockwise: false);
+    handPath.quadraticBezierTo(6, -15, 3, -7.5);
+    handPath.close();
+
+    canvas.drawPath(handPath, fillPaint);
+    canvas.drawPath(handPath, strokePaint);
+
+    // 3. Delicate finger cleft creases
+    final cleftPath = Path();
+    cleftPath.moveTo(12, 3.5); cleftPath.lineTo(7, 3.0);
+    cleftPath.moveTo(13, -1.6); cleftPath.lineTo(8, -1.0);
+    cleftPath.moveTo(9, -6.5); cleftPath.quadraticBezierTo(6, -4, 4, -2);
+    canvas.drawPath(cleftPath, strokePaint);
 
     canvas.restore();
   }
@@ -809,18 +876,21 @@ class BrainFogPainter extends CustomPainter {
       final leftRect = Rect.fromCenter(center: leftEye, width: eyeWidth, height: eyeHeight);
       final rightRect = Rect.fromCenter(center: rightEye, width: eyeWidth, height: eyeHeight);
 
+      final pupilR = eyeWidth * 0.28;
       canvas.save();
       canvas.clipRect(Rect.fromLTRB(leftEye.dx - eyeWidth, leftEye.dy - 1, leftEye.dx + eyeWidth, leftEye.dy + eyeHeight));
       canvas.drawOval(leftRect, Paint()..color = Colors.white);
       canvas.drawOval(leftRect, eyeStroke);
-      canvas.drawCircle(leftEye + const Offset(0, 3), eyeWidth * 0.28, Paint()..color = const Color(0xFF1E293B));
+      canvas.drawCircle(leftEye + const Offset(0, 3), pupilR, Paint()..color = const Color(0xFF1E293B));
+      canvas.drawCircle(leftEye + Offset(-pupilR * 0.35, 3 - pupilR * 0.35), pupilR * 0.38, Paint()..color = Colors.white);
       canvas.restore();
 
       canvas.save();
       canvas.clipRect(Rect.fromLTRB(rightEye.dx - eyeWidth, rightEye.dy - 1, rightEye.dx + eyeWidth, rightEye.dy + eyeHeight));
       canvas.drawOval(rightRect, Paint()..color = Colors.white);
       canvas.drawOval(rightRect, eyeStroke);
-      canvas.drawCircle(rightEye + const Offset(0, 3), eyeWidth * 0.28, Paint()..color = const Color(0xFF1E293B));
+      canvas.drawCircle(rightEye + const Offset(0, 3), pupilR, Paint()..color = const Color(0xFF1E293B));
+      canvas.drawCircle(rightEye + Offset(-pupilR * 0.35, 3 - pupilR * 0.35), pupilR * 0.38, Paint()..color = Colors.white);
       canvas.restore();
 
       // Droopy eyelid line
@@ -832,6 +902,14 @@ class BrainFogPainter extends CustomPainter {
 
       canvas.drawLine(Offset(leftEye.dx - eyeWidth * 0.6, leftEye.dy - 1), Offset(leftEye.dx + eyeWidth * 0.6, leftEye.dy + 2), eyelidPaint);
       canvas.drawLine(Offset(rightEye.dx - eyeWidth * 0.6, rightEye.dy + 2), Offset(rightEye.dx + eyeWidth * 0.6, rightEye.dy - 1), eyelidPaint);
+
+      // Under-eye tiredness creases
+      final bagPaint = Paint()
+        ..color = const Color(0xFFA8324A).withValues(alpha: 0.45)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4;
+      canvas.drawArc(Rect.fromCenter(center: Offset(leftEye.dx, leftEye.dy + 5), width: eyeWidth * 0.84, height: eyeHeight * 0.4), 0.1 * pi, 0.8 * pi, false, bagPaint);
+      canvas.drawArc(Rect.fromCenter(center: Offset(rightEye.dx, rightEye.dy + 5), width: eyeWidth * 0.84, height: eyeHeight * 0.4), 0.1 * pi, 0.8 * pi, false, bagPaint);
     }
 
     // Drooping tired brows
@@ -950,43 +1028,19 @@ class BrainFogPainter extends CustomPainter {
       _drawSparkle(canvas, Offset(center.dx + rx * 0.88, center.dy - ry * 0.85), 6.5, animationValue);
       _drawSparkle(canvas, Offset(center.dx - rx * 0.85, center.dy - ry * 0.75), 5.5, animationValue + 0.45);
     } else if (tier == FogTier.mildHaze) {
-      // Stage 2: Single teardrop below the right eye, smoothly vanishes near the cheek bottom
-      final eyeSpacing = rx * 0.34;
-      final eyeY = center.dy + ry * 0.12;
-      final phase = (animationValue * 1.5) % 1.0;
-      _drawDroppingTear(
-        canvas,
-        startX: center.dx + eyeSpacing * 0.95,
-        startY: eyeY + ry * 0.22,
-        totalDistance: ry * 0.50,
-        phase: phase,
-        maxRadius: 4.5,
-      );
+      // Stage 2: Calm tired face, no tear
     } else if (tier == FogTier.denseFog) {
-      // Stage 3: Teardrops directly below BOTH eyes, staggered, vanishing before bottom
+      // Stage 3: SINGLE slow side teardrop on right cheek (speed: 0.45)
       final eyeSpacing = rx * 0.34;
       final eyeY = center.dy + ry * 0.12;
+      final phase = (animationValue * 0.45) % 1.0;
 
-      final phaseLeft = (animationValue * 1.6) % 1.0;
-      final phaseRight = ((animationValue + 0.45) * 1.6) % 1.0;
-
-      // Left eye tear
       _drawDroppingTear(
         canvas,
-        startX: center.dx - eyeSpacing * 0.95,
-        startY: eyeY + ry * 0.22,
+        startX: center.dx + eyeSpacing * 0.95 + 4,
+        startY: eyeY + 4,
         totalDistance: ry * 0.55,
-        phase: phaseLeft,
-        maxRadius: 4.8,
-      );
-
-      // Right eye tear
-      _drawDroppingTear(
-        canvas,
-        startX: center.dx + eyeSpacing * 0.95,
-        startY: eyeY + ry * 0.22,
-        totalDistance: ry * 0.55,
-        phase: phaseRight,
+        phase: phase,
         maxRadius: 4.8,
       );
     } else if (tier == FogTier.sludgeGlitch) {
