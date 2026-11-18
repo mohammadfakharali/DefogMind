@@ -262,6 +262,10 @@ class FocusMonitorService : Service() {
     private var kidsTodayUsageMsMap = mutableMapOf<String, Long>()
     private var cachedLauncherPackages = mutableSetOf<String>()
     private var lastLauncherQueryMs = 0L
+    private var lastKidsPackage = ""
+    private var isKidsAppOpenPeek = false
+    private var kidsPeekExpiryMs = 0L
+    private var lastKidsMinuteMilestoneShown = -1
 
     private val bypassReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -404,6 +408,10 @@ class FocusMonitorService : Service() {
             }
             if (!active) {
                 hideFloatingPill()
+                lastKidsPackage = ""
+                isKidsAppOpenPeek = false
+                kidsPeekExpiryMs = 0L
+                lastKidsMinuteMilestoneShown = -1
             }
         }
     }
@@ -668,6 +676,9 @@ class FocusMonitorService : Service() {
             // 2. Check if foreground package is a whitelisted system / launcher / emergency / DefogMind package
             val isWhitelistedSystem = isSystemOrLauncherWhitelisted(lastForegroundPackage)
             if (isWhitelistedSystem) {
+                lastKidsPackage = ""
+                isKidsAppOpenPeek = true
+                kidsPeekExpiryMs = 0L
                 hideFloatingPill()
                 return
             }
@@ -693,12 +704,50 @@ class FocusMonitorService : Service() {
                         .putInt(KEY_KIDS_REMAINING_SECONDS, kidsRemainingSeconds)
                         .apply()
 
-                    val pillColor = if (kidsRemainingSeconds <= 300) Color.parseColor("#F59E0B") else Color.parseColor("#06B6D4")
-                    showOrUpdateFloatingPill(formatKidsTimerText(kidsRemainingSeconds), false, "", pillColor)
-
                     if (kidsRemainingSeconds <= 0) {
                         hideFloatingPill()
                         triggerKidsBlockingOverlay(lastForegroundPackage, "TIME_UP")
+                        return
+                    }
+
+                    val isAppOpen = (lastKidsPackage != lastForegroundPackage)
+                    if (isAppOpen) {
+                        lastKidsPackage = lastForegroundPackage
+                        isKidsAppOpenPeek = true
+                    }
+
+                    val isFinalFiveMinutes = kidsRemainingSeconds <= 300 // 5 minutes or less
+                    val remainingMins = (kidsRemainingSeconds + 59) / 60
+
+                    // Option A (Smart Countdown):
+                    // 1) 10s on App Open
+                    // 2) 10s peeks at 5-minute intervals (e.g. 25m, 20m, 15m, 10m left)
+                    // 3) Stays continuously visible during final 5 minutes
+                    if (isKidsAppOpenPeek) {
+                        isKidsAppOpenPeek = false
+                        lastKidsMinuteMilestoneShown = remainingMins
+                        kidsPeekExpiryMs = now + 10000L // 10 seconds on app open
+                    } else if (kidsRemainingSeconds > 300 && kidsRemainingSeconds % 300 == 0 && remainingMins != lastKidsMinuteMilestoneShown) {
+                        lastKidsMinuteMilestoneShown = remainingMins
+                        kidsPeekExpiryMs = maxOf(kidsPeekExpiryMs, now + 10000L) // 10 seconds at 5-minute milestone
+                    }
+
+                    if (isFinalFiveMinutes || now < kidsPeekExpiryMs) {
+                        val pillColor = when {
+                            kidsRemainingSeconds <= 60 -> Color.parseColor("#EF4444") // Final minute: Red alert
+                            kidsRemainingSeconds <= 300 -> Color.parseColor("#F59E0B") // Final 5 mins: Amber warning
+                            else -> Color.parseColor("#06B6D4") // Normal peek: Playful Cyan
+                        }
+
+                        val displayText = if (isFinalFiveMinutes) {
+                            formatKidsTimerText(kidsRemainingSeconds) // "🧸 Kids Time: MM:SS"
+                        } else {
+                            "🧸 Kids Time: ${remainingMins}m left"
+                        }
+
+                        showOrUpdateFloatingPill(displayText, false, "", pillColor, animateFadeIn = (now < kidsPeekExpiryMs && !isFinalFiveMinutes))
+                    } else if (floatingPillView != null) {
+                        fadeOutAndHideFloatingPill()
                     }
                 } else {
                     hideFloatingPill()
@@ -706,6 +755,9 @@ class FocusMonitorService : Service() {
                 }
             } else {
                 // App is NOT in kidsAllowedPackages -> Immediately block!
+                lastKidsPackage = ""
+                isKidsAppOpenPeek = true
+                kidsPeekExpiryMs = 0L
                 hideFloatingPill()
                 triggerKidsBlockingOverlay(lastForegroundPackage, "APP_LOCKED")
             }
