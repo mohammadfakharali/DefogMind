@@ -466,6 +466,15 @@ class FocusMonitorService : Service() {
         lastSocialExitTimestampMs = prefs.getLong("KEY_LAST_SOCIAL_EXIT_MS", 0L)
         currentSessionContinuousMs = prefs.getLong("KEY_SESSION_CONTINUOUS_MS", 0L)
         centralAwarenessFog = prefs.getFloat(KEY_CENTRAL_AWARENESS_FOG, 0f).toDouble()
+
+        // Account for rest recovery while phone/service was offline (1% recovery per 3 minutes)
+        val nowMs = System.currentTimeMillis()
+        if (lastSocialExitTimestampMs > 0L && nowMs > lastSocialExitTimestampMs && centralAwarenessFog > 0.0) {
+            val elapsedSec = (nowMs - lastSocialExitTimestampMs) / 1000L
+            val offlineRecovery = elapsedSec * (1.0 / 180.0)
+            centralAwarenessFog = maxOf(0.0, centralAwarenessFog - offlineRecovery)
+        }
+
         currentNetBrainFogPercent = Math.round(centralAwarenessFog).toInt()
         liveNetBrainFogPercent = currentNetBrainFogPercent
         liveStatusWord = getAwarenessStatusWord(currentNetBrainFogPercent)
@@ -610,7 +619,8 @@ class FocusMonitorService : Service() {
         val isDefogMindInForeground = isMainActivityVisible || (lastForegroundPackage == packageName)
         isTargetInForeground = !isDefogMindInForeground && monitoredPackages.contains(lastForegroundPackage)
 
-        // Day transition check (resets everything cleanly at midnight or on fresh install)
+        // Day transition check (resets daily usage counters at midnight for new day,
+        // but preserves Brain Fog so it only decreases naturally via rest/sleep)
         val todayKey = getTodayDateKey()
         if (cachedDayKey != todayKey) {
             cachedDayKey = todayKey
@@ -618,18 +628,12 @@ class FocusMonitorService : Service() {
             baseHistoricalSocialMs = 0L
             lastSocialExitTimestampMs = 0L
             currentSessionContinuousMs = 0L
-            centralAwarenessFog = 0.0
-            currentNetBrainFogPercent = 0
-            liveNetBrainFogPercent = 0
-            liveStatusWord = "Fresh"
             kidsTodayUsageMsMap.clear()
             prefs.edit()
                 .putString("KEY_TRACKED_DAY", todayKey)
                 .putLong("KEY_TRACKED_MS", 0L)
                 .putLong("KEY_LAST_SOCIAL_EXIT_MS", 0L)
                 .putLong("KEY_SESSION_CONTINUOUS_MS", 0L)
-                .putFloat(KEY_CENTRAL_AWARENESS_FOG, 0f)
-                .putInt("KEY_LAST_NET_FOG", 0)
                 .putString(KEY_KIDS_USAGE_DAY, todayKey)
                 .putStringSet(KEY_KIDS_TRACKED_PACKAGES, emptySet())
                 .apply()
@@ -743,9 +747,16 @@ class FocusMonitorService : Service() {
             // Increment active session duration by 1 second (1000ms)
             currentSessionContinuousMs += 1000L
 
-            // Simple Linear Awareness Mode Fatigue Rate:
-            // Increase: +1% per 1 minute of active usage (+1.0 / 60.0 per second)
-            val gainPerSecond = 1.0 / 60.0
+            // Progressive Brain Fog Fatigue Rate:
+            // 0m - 45m:     +1% per 1.5 min  (+1.0 / 90.0 per sec) -> 30% fog at 45m (Fresh Mind)
+            // 45m - 70m:    +1% per 1.25 min (+1.0 / 75.0 per sec) -> 50% fog at 70m (Tired Mind)
+            // 70m - 100m:   +1% per 1.0 min  (+1.0 / 60.0 per sec) -> 80% fog at 100m (Heavy Mind)
+            // 100m - 120m+: +1% per 1.0 min  (+1.0 / 60.0 per sec) -> 100% fog at 120m (Overloaded Mind)
+            val gainPerSecond = when {
+                centralAwarenessFog < 30.0 -> 1.0 / 90.0
+                centralAwarenessFog < 50.0 -> 1.0 / 75.0
+                else -> 1.0 / 60.0
+            }
             centralAwarenessFog = minOf(100.0, centralAwarenessFog + gainPerSecond)
             currentNetBrainFogPercent = Math.round(centralAwarenessFog).toInt()
             liveNetBrainFogPercent = currentNetBrainFogPercent
@@ -1045,8 +1056,8 @@ class FocusMonitorService : Service() {
     private fun getAwarenessStatusWord(fogPercent: Int): String {
         return when {
             fogPercent <= 30 -> "Fresh"
-            fogPercent <= 60 -> "Tired"
-            fogPercent <= 90 -> "Heavy"
+            fogPercent <= 50 -> "Tired"
+            fogPercent <= 80 -> "Heavy"
             else -> "Overloaded"
         }
     }
@@ -1054,8 +1065,8 @@ class FocusMonitorService : Service() {
     private fun getAwarenessColor(fogPercent: Int): Int {
         return when {
             fogPercent <= 30 -> Color.parseColor("#10B981") // Mint
-            fogPercent <= 60 -> Color.parseColor("#F59E0B") // Amber
-            fogPercent <= 90 -> Color.parseColor("#FB923C") // Orange
+            fogPercent <= 50 -> Color.parseColor("#F59E0B") // Amber
+            fogPercent <= 80 -> Color.parseColor("#FB923C") // Orange
             else -> Color.parseColor("#EF4444")             // Glitch Red
         }
     }
@@ -1155,8 +1166,8 @@ class FocusMonitorService : Service() {
             }
             val currentTier = when {
                 currentNetBrainFogPercent <= 30 -> 0
-                currentNetBrainFogPercent <= 60 -> 1
-                currentNetBrainFogPercent <= 90 -> 2
+                currentNetBrainFogPercent <= 50 -> 1
+                currentNetBrainFogPercent <= 80 -> 2
                 else -> 3
             }
             brainCharView.updateTier(currentTier)
@@ -1270,8 +1281,8 @@ class FocusMonitorService : Service() {
 
                 val currentTier = when {
                     currentNetBrainFogPercent <= 30 -> 0
-                    currentNetBrainFogPercent <= 60 -> 1
-                    currentNetBrainFogPercent <= 90 -> 2
+                    currentNetBrainFogPercent <= 50 -> 1
+                    currentNetBrainFogPercent <= 80 -> 2
                     else -> 3
                 }
                 floatingPillBrainCharacter?.visibility = if (showBrain) View.VISIBLE else View.GONE

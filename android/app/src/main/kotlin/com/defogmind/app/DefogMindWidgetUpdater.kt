@@ -35,8 +35,8 @@ object DefogMindWidgetUpdater {
 
             val tier = when {
                 fog <= 30 -> 0
-                fog <= 60 -> 1
-                fog <= 90 -> 2
+                fog <= 50 -> 1
+                fog <= 80 -> 2
                 else -> 3
             }
 

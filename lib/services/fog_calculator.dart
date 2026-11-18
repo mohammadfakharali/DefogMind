@@ -41,14 +41,14 @@ class FogCalculator {
   }) {
     final double netPercentage = (cachedServiceFog ?? 0).toDouble().clamp(0.0, 100.0);
 
-    // Determine status tier from percentage (0-30: Fresh, 31-60: Tired, 61-90: Heavy, 91-100: Overloaded)
+    // Determine status tier from percentage (0-30: Fresh, 31-50: Tired, 51-80: Heavy, 81-100: Overloaded)
     final int roundedPct = netPercentage.round();
     final FogTier tier;
     if (roundedPct <= 30) {
       tier = FogTier.cleanMind;
-    } else if (roundedPct <= 60) {
+    } else if (roundedPct <= 50) {
       tier = FogTier.mildHaze;
-    } else if (roundedPct <= 90) {
+    } else if (roundedPct <= 80) {
       tier = FogTier.denseFog;
     } else {
       tier = FogTier.sludgeGlitch;
