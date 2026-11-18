@@ -43,6 +43,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
   Map<String, String> _installedAppNames = {};
   Timer? _refreshTimer;
   bool _isLoading = false;
+  bool _showWidgetCard = false;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _fetchUsageData();
+      _checkWidgetCardStatus();
     }
   }
 
@@ -84,6 +86,10 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
       }
     }
 
+    final isWidgetSupported = await UsageService.isPinWidgetSupported();
+    final isWidgetAdded = await UsageService.isWidgetAdded();
+    final isWidgetDismissed = prefs.getBool('home_widget_card_dismissed') ?? false;
+
     setState(() {
       _focusMode = mode;
       _isAdultTrackingEnabled = adultEnabled;
@@ -92,6 +98,7 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
       _remainingPasses = passes;
       _passiveRecoveryMinutes = recoveryMins;
       _cachedServiceFog = liveFog;
+      _showWidgetCard = isWidgetSupported && !isWidgetAdded && !isWidgetDismissed;
     });
 
     final duration = prefs.getInt('oxygen_pass_duration_seconds') ?? 300;
@@ -127,6 +134,42 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
         AdMobService.instance.initialize().catchError((_) {});
       }
     });
+  }
+
+  Future<void> _checkWidgetCardStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isWidgetSupported = await UsageService.isPinWidgetSupported();
+    final isWidgetAdded = await UsageService.isWidgetAdded();
+    final isWidgetDismissed = prefs.getBool('home_widget_card_dismissed') ?? false;
+    if (mounted) {
+      setState(() {
+        _showWidgetCard = isWidgetSupported && !isWidgetAdded && !isWidgetDismissed;
+      });
+    }
+  }
+
+  Future<void> _onAddWidgetTapped() async {
+    final pinned = await UsageService.requestPinWidget();
+    if (pinned && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Widget pinned! Check your Home Screen.'),
+          backgroundColor: AppTheme.mint,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) _checkWidgetCardStatus();
+    });
+  }
+
+  Future<void> _onDismissWidgetCard() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('home_widget_card_dismissed', true);
+    if (mounted) {
+      setState(() => _showWidgetCard = false);
+    }
   }
 
   Future<void> _fetchUsageData() async {
@@ -417,6 +460,12 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                         _buildBrainFogCard(fogResult),
                         const SizedBox(height: 20),
 
+                        // Add Widget to Home Screen Dismissible Banner
+                        if (!_isKidsModeActive && _showWidgetCard) ...[
+                          _buildAddWidgetCard(),
+                          const SizedBox(height: 20),
+                        ],
+
                         // Extra Unlock Pass Status Card (Shown right below Brain Fog card ONLY when Daily Limit is reached in Limit Mode)
                         if (_focusMode == 1 && _dailyLimitMinutes > 0 && _totalSocialMinutes >= _dailyLimitMinutes) ...[
                           _buildBypassTokenCard(),
@@ -454,6 +503,107 @@ class _HomeDashboardState extends State<HomeDashboard> with WidgetsBindingObserv
                 ),
       // Zero ads while Kids Mode is active (100% Google Play & AdMob safe)
       bottomNavigationBar: _isKidsModeActive ? null : const BannerAdWidget(),
+    );
+  }
+
+  Widget _buildAddWidgetCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceCard(context),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: AppTheme.mint.withValues(alpha: 0.35),
+          width: 1.4,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: AppTheme.mint.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.widgets_rounded,
+                    color: AppTheme.mint,
+                    size: 22,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Keep Focus in Glance',
+                      style: TextStyle(
+                        color: AppTheme.textPrimary(context),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14.5,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'Add the 2×2 Brain Clarity widget to monitor brain fog without opening the app.',
+                      style: TextStyle(
+                        color: AppTheme.textSecondary(context),
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: _onDismissWidgetCard,
+                borderRadius: BorderRadius.circular(20),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.close_rounded,
+                    color: AppTheme.textMuted(context),
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.mint,
+                foregroundColor: Colors.black,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: _onAddWidgetTapped,
+              icon: const Icon(Icons.add_to_home_screen_rounded, size: 18),
+              label: const Text(
+                'Add Widget to Home Screen',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
