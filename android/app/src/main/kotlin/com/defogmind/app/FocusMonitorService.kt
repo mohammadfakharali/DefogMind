@@ -245,9 +245,11 @@ class FocusMonitorService : Service() {
     private var lastSocialExitTimestampMs = 0L
     private var centralAwarenessFog: Double = 0.0
     private var currentNetBrainFogPercent = 0
-    private var lastDetoxMilestoneShown = 0
     private var lastSocialMinuteShown = -1
     private var detoxPeekExpiryMs = 0L
+    private var lastAwarenessMilestoneShown = -1
+    private var lastAwarenessTierShown = -1
+    private var awarenessPeekExpiryMs = 0L
     private var isFirstAppOpenPeek = false
     private var currentTargetMonitoredPackage = ""
     private var isFadingOutPill = false
@@ -628,6 +630,9 @@ class FocusMonitorService : Service() {
             baseHistoricalSocialMs = 0L
             lastSocialExitTimestampMs = 0L
             currentSessionContinuousMs = 0L
+            lastSocialMinuteShown = -1
+            lastAwarenessMilestoneShown = -1
+            lastAwarenessTierShown = -1
             kidsTodayUsageMsMap.clear()
             prefs.edit()
                 .putString("KEY_TRACKED_DAY", todayKey)
@@ -711,6 +716,7 @@ class FocusMonitorService : Service() {
         if (!adultTrackingEnabled) {
             wasTargetInForeground = false
             detoxPeekExpiryMs = 0L
+            awarenessPeekExpiryMs = 0L
             hideFloatingPill()
             cancelServiceRestart()
             stopMonitoring()
@@ -841,19 +847,17 @@ class FocusMonitorService : Service() {
                         val remainingMins = (dailyLimitMinutes - todaySocialMinutes).coerceAtLeast(0)
                         val isFinalFiveMinutes = dailyLimitMinutes > 0 && remainingMins <= 5
 
-                        // Show for 10 seconds on first app open; show for 5 seconds on every 1% change or minute change!
+                        // Limit Mode: Show for 10 seconds on first app open; show for 10 seconds every 5 minutes!
                         if (isFirstAppOpenPeek) {
                             isFirstAppOpenPeek = false
-                            lastDetoxMilestoneShown = currentNetBrainFogPercent
                             lastSocialMinuteShown = todaySocialMinutes
                             detoxPeekExpiryMs = now + 10000L // Show for 10 seconds on first app open
-                        } else if (currentNetBrainFogPercent != lastDetoxMilestoneShown || todaySocialMinutes != lastSocialMinuteShown) {
-                            lastDetoxMilestoneShown = currentNetBrainFogPercent
+                        } else if (todaySocialMinutes > 0 && todaySocialMinutes % 5 == 0 && todaySocialMinutes != lastSocialMinuteShown) {
                             lastSocialMinuteShown = todaySocialMinutes
-                            detoxPeekExpiryMs = maxOf(detoxPeekExpiryMs, now + 5000L) // Show for 5 seconds on each change
+                            detoxPeekExpiryMs = maxOf(detoxPeekExpiryMs, now + 10000L) // Show for 10 seconds every 5 minutes
                         }
 
-                        // Normal: peeks for 10s on open / 5s on change. Final 5 minutes: stays continuously visible (still) on screen!
+                        // Normal: peeks for 10s on open / 10s every 5m. Final 5 minutes: stays continuously visible (still) on screen!
                         if (isFinalFiveMinutes || now < detoxPeekExpiryMs) {
                             val word = getAwarenessStatusWord(currentNetBrainFogPercent)
                             val statusColor = getAwarenessColor(currentNetBrainFogPercent)
@@ -868,14 +872,38 @@ class FocusMonitorService : Service() {
                         }
                     }
                 } else {
-                    // Awareness Mode (focusMode == 0): Show continuous movable awareness status pill inside tracked apps!
-                    val word = getAwarenessStatusWord(currentNetBrainFogPercent)
-                    val statusColor = getAwarenessColor(currentNetBrainFogPercent)
-                    showOrUpdateFloatingPill("", true, "$word • $currentNetBrainFogPercent% Fog", statusColor)
+                    // Awareness Mode (focusMode == 0): Peek on app open (10s), every 5% milestone (10s), and tier changes (10s)!
+                    val currentTier = when {
+                        currentNetBrainFogPercent <= 30 -> 0
+                        currentNetBrainFogPercent <= 50 -> 1
+                        currentNetBrainFogPercent <= 80 -> 2
+                        else -> 3
+                    }
+                    val currentMilestone = currentNetBrainFogPercent / 5
+
+                    if (isFirstAppOpenPeek) {
+                        isFirstAppOpenPeek = false
+                        lastAwarenessMilestoneShown = currentMilestone
+                        lastAwarenessTierShown = currentTier
+                        awarenessPeekExpiryMs = now + 10000L // Show for 10 seconds on first app open
+                    } else if (currentTier != lastAwarenessTierShown || (currentMilestone > lastAwarenessMilestoneShown && currentNetBrainFogPercent > 0)) {
+                        lastAwarenessMilestoneShown = currentMilestone
+                        lastAwarenessTierShown = currentTier
+                        awarenessPeekExpiryMs = maxOf(awarenessPeekExpiryMs, now + 10000L) // Show for 10 seconds on milestone / tier change
+                    }
+
+                    if (now < awarenessPeekExpiryMs) {
+                        val word = getAwarenessStatusWord(currentNetBrainFogPercent)
+                        val statusColor = getAwarenessColor(currentNetBrainFogPercent)
+                        showOrUpdateFloatingPill("", true, "$word • $currentNetBrainFogPercent% Fog", statusColor, animateFadeIn = true)
+                    } else if (floatingPillView != null) {
+                        fadeOutAndHideFloatingPill()
+                    }
                 }
             } else {
                 // Not in a monitored app -> Hide floating pill completely!
                 detoxPeekExpiryMs = 0L
+                awarenessPeekExpiryMs = 0L
                 isFirstAppOpenPeek = false
                 currentTargetMonitoredPackage = ""
                 hideFloatingPill()
