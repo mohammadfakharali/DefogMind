@@ -229,23 +229,23 @@ object DefogMindWidgetUpdater {
 
             when (tier) {
                 0 -> {
-                    // Fresh: Left wave up, Right arch out & down with fingers down
+                    // Fresh: Left wave up, Right arch out & down with fingers pointing straight DOWN
                     val leftHandX = cx - rx * 1.22f
                     val leftHandY = cy - ry * 0.35f
-                    val leftElbowX = (leftShoulderX + leftHandX) / 2f - 2f
-                    val leftElbowY = (leftShoulderY + leftHandY) / 2f + 2f
+                    val leftElbowX = (leftShoulderX + leftHandX) / 2f - 4f
+                    val leftElbowY = (leftShoulderY + leftHandY) / 2f + 4f
 
                     drawArmTube(canvas, leftShoulderX, leftShoulderY, leftElbowX, leftElbowY, leftHandX, leftHandY, armW, legCol, legOut)
                     val leftAngle = atan2(leftHandY - leftElbowY, leftHandX - leftElbowX)
                     drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
 
-                    val rightElbowX = cx + rx * 1.24f
-                    val rightElbowY = cy + ry * 0.44f
-                    val rightHandX = cx + rx * 1.08f
-                    val rightHandY = cy + ry * 0.78f
+                    val rightElbowX = cx + rx * 1.22f
+                    val rightElbowY = cy + ry * 0.42f
+                    val rightHandX = cx + rx * 1.15f
+                    val rightHandY = cy + ry * 0.72f
 
                     drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
-                    val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                    val rightAngle = (PI / 2.0).toFloat() // Straight DOWN!
                     drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
                 }
                 1 -> {
@@ -416,14 +416,14 @@ object DefogMindWidgetUpdater {
         val mirrorY = if (isLeft) 1f else -1f
         canvas.scale(1f, mirrorY)
 
-        val scale = rx / 38f
+        val scale = rx / 92f
         canvas.scale(scale, scale)
 
         val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE }
         val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#0F172A")
             style = Paint.Style.STROKE
-            strokeWidth = 1.6f
+            strokeWidth = 1.8f
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
         }

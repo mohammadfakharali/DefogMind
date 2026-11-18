@@ -584,11 +584,11 @@ class BrainFogPainter extends CustomPainter {
       _drawSeamlessCartoonGlove(canvas, leftHandPos, leftForearmAngle, isLeft: true);
 
       // Right arm curves gracefully OUT and DOWN
-      final rightElbow = Offset(center.dx + rx * 1.26, center.dy + ry * 0.44);
-      final rightHandPos = Offset(center.dx + rx * 1.10, center.dy + ry * 0.78);
+      final rightElbow = Offset(center.dx + rx * 1.22, center.dy + ry * 0.42);
+      final rightHandPos = Offset(center.dx + rx * 1.15, center.dy + ry * 0.72);
 
       _drawArmTube(canvas, rightShoulder, rightElbow, rightHandPos, armWidth, legColor, legOutline);
-      final rightAngle = atan2(rightHandPos.dy - rightElbow.dy, rightHandPos.dx - rightElbow.dx);
+      const rightAngle = pi / 2.0; // Straight DOWN!
       _drawSeamlessCartoonGlove(canvas, rightHandPos, rightAngle, isLeft: false);
 
     } else if (tier == FogTier.mildHaze) {

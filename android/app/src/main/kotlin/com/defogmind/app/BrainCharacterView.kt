@@ -370,13 +370,13 @@ class BrainCharacterView @JvmOverloads constructor(
                 drawSeamlessGlove(canvas, leftHandX, leftHandY, leftAngle, isLeft = true, rx = rx)
 
                 // Right arm curves gracefully OUT and DOWN
-                val rightElbowX = cx + rx * 1.26f
-                val rightElbowY = cy + ry * 0.44f
-                val rightHandX = cx + rx * 1.10f
-                val rightHandY = cy + ry * 0.78f
+                val rightElbowX = cx + rx * 1.22f
+                val rightElbowY = cy + ry * 0.42f
+                val rightHandX = cx + rx * 1.15f
+                val rightHandY = cy + ry * 0.72f
 
                 drawArmTube(canvas, rightShoulderX, rightShoulderY, rightElbowX, rightElbowY, rightHandX, rightHandY, armW, legCol, legOut)
-                val rightAngle = atan2(rightHandY - rightElbowY, rightHandX - rightElbowX)
+                val rightAngle = (PI / 2.0).toFloat() // Straight DOWN!
                 drawSeamlessGlove(canvas, rightHandX, rightHandY, rightAngle, isLeft = false, rx = rx)
             }
             1 -> {
